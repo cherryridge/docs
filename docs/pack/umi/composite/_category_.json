@@ -1,0 +1,8 @@
+{
+    "label": "Composite",
+    "position": 103,
+    "link": {
+        "type": "doc",
+        "id": "pack/umi/composite/index"
+    }
+}

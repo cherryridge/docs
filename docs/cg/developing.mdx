@@ -1,0 +1,41 @@
+﻿# Tips for Developing
+
+## Visual Studio Code
+
+Install the following extensions:
+
+1. C/C++ by Microsoft
+2. C/C++ Themes by Microsoft (optional)
+3. clangd by LLVM (optional, if you want to have a better developing experience)
+    - Also download from [GitHub releases](https://github.com/clangd/clangd/releases/latest) and add the `bin` directory to `PATH`.
+4. CMake Tools by Microsoft
+5. Any CMake language hightlight extension (optional)
+6. NSIS by idleberg (for Windows, optional)
+
+Recommended VS Code settings:
+```json
+{
+    //Use clangd instead of intellisense from C/C++ extension
+    "C_Cpp.intelliSenseEngine": "disabled",
+    //I genuinely don't know why this is not enabled by default and you just need to Ctrl+Shift+P for everything
+    "cmake.options.statusBarVisibility": "icon",
+    //Copy `compile_commands.json` to the root directory so clangd can refer to it
+    "cmake.copyCompileCommands": "${workspaceFolder}/compile_commands.json",
+    "clangd.arguments": [
+        //Always index files even you don't open them
+        "--background-index",
+        //Point to `compile_commands.json` in the root directory
+        "--compile-commands-dir=${workspaceFolder}"
+    ]
+}
+```
+
+After cloning CherryGrove, open Visual Studio Code, choose the correct configuration, press <kbd>Ctrl</kbd>+<kbd>Shift</kbd>+<kbd>P</kbd> to open command palette and choose CMake: Configure.
+
+## Visual Studio
+
+Visual Studio has a haunted relationship with CMake, especially with `CMakePresets.json`. One of the known issue is it's always choosing `linux-arm64-debug` (which is the smallest in dictionary order) as the default configuration. Please change it manually upon first opening the project.
+
+## CLion
+
+TODO

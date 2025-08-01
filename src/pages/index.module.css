@@ -1,0 +1,40 @@
+.banner{
+    padding: 4rem 0;
+    text-align: center;
+    position: relative;
+    overflow: hidden;
+    background-color: #5bd093;
+}
+
+[data-theme="dark"] .banner{
+    background-color: #145d4e;
+}
+
+.buttons{
+    display: flex;
+    flex-flow: row nowrap;
+    align-items: center;
+    justify-content: center;
+}
+
+.main{
+    display: flex;
+    flex-flow: column nowrap;
+    align-items: center;
+    margin: 3rem 2rem;
+}
+
+.featureContainer{
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(min(100%, 300px), 1fr));
+    max-width: 1200px;
+    min-width: 0px;
+    gap: 2rem;
+    margin-bottom: 2rem;
+}
+
+@media screen and (max-width: 996px){
+    .banner{
+        padding: 2rem;
+    }
+}

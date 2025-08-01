@@ -1,0 +1,366 @@
+﻿---
+sidebar_position: 1
+---
+
+import Tabs from "@theme/Tabs";
+import TabItem from "@theme/TabItem";
+
+# Building CherryGrove
+
+This tutorial will help you build CherryGrove on your own machine. This is also a very good starting point for developing CherryGrove.
+
+CherryGrove is still in a very early stage of development. Please check CherryGrove's currently [supported platforms](../overview#supported-platforms) before you move on.
+
+## Introduction
+
+CherryGrove currently uses the CMake build system only. We use the following dependency management strategies:
+
+- For header-only libraries, we use Git submodules and CMake's `target_include_directories` to include them automatically.
+- For CMake compatible libraries, we use Git submodules and CMake's `add_subdirectory` command to import it. You also don't need to manage them on your own.
+- For libraries that are meant to be downloaded and compiled with the project, we commit them into our repository and build them together with other source files. Get more information at [Local Libraries Documentation](https://github.com/cherryridge/CherryGrove/blob/main/libs/README.md).
+- For other libraries, we use GitHub Actions to build them in advance, and **you need to grab them from the corresponding repositories, or CherryGrove won't build successfully**.
+
+## Prerequisites
+
+### Build Toolchain
+
+:::warning
+Prebuilt dependencies assume linkage against the platform's default C++ Standard Library:
+
+- Windows: MSVC, Microsoft STL
+- Linux: GCC, libstdc++
+- MacOS: Clang, libc++
+
+Building CherryGrove using incorrect C++ Standard Library will result in an ABI conflict while linking. Please build the prebuilt dependencies manually if you really need another standard library.
+:::
+
+<Tabs groupId="os">
+    <TabItem value="windows" label="Windows">
+        It's recommended to use Microsoft Visual Studio to build CherryGrove on Windows.
+
+        Download and install Visual Studio from https://visualstudio.microsoft.com.
+
+        Check **Desktop development with C++** in **Desktop & Mobile** section workload upon installing.
+
+        If you need to target a different architecture (e.g. targetting arm64 Windows on x64 Windows), you should switch to **Individual components** and check the MSVC component for the other architecture (e.g. `MSVC v1xx - VS 20xx C++ ARM64/ARM64EC build tools (latest)`).
+    </TabItem>
+    <TabItem value="linux" label="Linux">
+        It's recommended to use GCC to build CherryGrove on Linux.
+
+        For example in Ubuntu, `gcc` and `g++` in the registry are actually really old versions of them. As for 2025, install `gcc-14` and `g++-14` on your system and set alternatives to get a more complete C++20 environment:
+
+        ```bash
+        sudo apt install gcc-14 g++-14
+        sudo update-alternatives --install /usr/bin/gcc gcc /usr/bin/gcc-14 100
+        sudo update-alternatives --install /usr/bin/g++ g++ /usr/bin/g++-14 100
+        ```
+        Then verify the version of `gcc` and `g++`:
+
+        ```bash
+        gcc --version
+        g++ --version
+        ```
+        You should see `14.x.x` as the version.
+    </TabItem>
+    <TabItem value="macos" label="MacOS">
+        It's recommended to use XCode or CLion to build CherryGrove on MacOS. The tutorial below will use CLion.
+
+        Install CLion and TODO: MacOS
+    </TabItem>
+</Tabs>
+
+### CMake
+
+<Tabs groupId="os">
+    <TabItem value="windows" label="Windows">
+        Download and install CMake at https://cmake.org.
+    </TabItem>
+    <TabItem value="linux" label="Linux">
+        Install CMake from your distro's package manager, for example in Ubuntu:
+
+        ```bash
+        sudo apt install cmake
+        ```
+    </TabItem>
+    <TabItem value="macos" label="MacOS">
+        Download and install CMake at https://cmake.org, or install it from Homebrew:
+
+        ```bash
+        brew install cmake
+        ```
+    </TabItem>
+</Tabs>
+
+Check if CMake is installed using:
+
+```bash
+cmake --version
+```
+
+### Git
+
+Since CherryGrove uses Git submodules, it's recommended to clone the repository using Git, rather than downloading zip from GitHub webpage.
+
+<Tabs groupId="os">
+    <TabItem value="windows" label="Windows">
+        Download and install Git at https://git-scm.org.
+    </TabItem>
+    <TabItem value="linux" label="Linux">
+        Install Git from your distro's package manager, for example in Ubuntu:
+
+        ```bash
+        sudo apt install git
+        ```
+    </TabItem>
+    <TabItem value="macos" label="MacOS">
+        Download and install Git at https://git-scm.org, or install it from Homebrew:
+
+        ```bash
+        brew install git
+        ```
+    </TabItem>
+</Tabs>
+
+Check if Git is installed using:
+
+```bash
+git --version
+```
+
+### NASM
+
+CherryGrove uses `SDL_image` dependency to support AVIF texture input format, which involves compiling x86 assembly, thus we need a x86 assembly compiler on x86 architecture builds. NASM is recommended: https://nasm.us.
+
+Get NASM at https://nasm.us/pub/nasm/releasebuilds/?C=M;O=D. Click on the latest version (the top one without `rc`) and download installer according to your OS.
+
+NASM only provides `.rpm` (Red Hat distros) packages for Linux, you might need a conversion tool to install it, for example on Ubuntu use Alien:
+
+```bash
+sudo apt install alien
+alien -V
+```
+
+You should see the version output. Convert the package to `.deb` and install it:
+
+```bash
+sudo alien --to-deb <package name>.rpm
+sudo dpkg -i <package name>.deb
+nasm -v
+```
+
+You should see NASM's version output. If any dependencies are missing, fix them using:
+
+```bash
+sudo apt install -f
+```
+
+### 7-zip
+
+You will need 7z-compatible compression software to decompress downloaded dependencies. If you haven't installed any compression tools, here's one way to do that:
+
+<Tabs groupId="os">
+    <TabItem value="windows" label="Windows">
+        If you're using Windows 11 22H2 or later versions of Windows, you don't need to install anything. Doubleclicking the `.7z` file will show you the files inside of it.
+
+        Otherwise, it's recommended to download and install 7-zip at https://7-zip.org.
+    </TabItem>
+    <TabItem value="linux" label="Linux">
+        Install `p7zip` from your distro's package manager, for example in Ubuntu:
+
+        ```bash
+        sudo apt install p7zip
+        ```
+        Check if 7z is installed using:
+
+        ```bash
+        7z
+        ```
+    </TabItem>
+    <TabItem value="macos" label="MacOS">
+        Install `p7zip` from Homebrew:
+
+        ```bash
+        brew install p7zip
+        ```
+        Check if 7z is installed using:
+
+        ```bash
+        7z
+        ```
+    </TabItem>
+</Tabs>
+
+## Clone Repository
+
+Remember to use the `--recursive` argument. Cloning might take several minutes to complete.
+
+```bash
+git clone --recursive https://github.com/cherryridge/cherrygrove.git
+```
+
+## Grab Prebuilt Depedencies
+
+Currently we have five prebuilt dependencies that **need to be downloaded manually** from GitHub Action's release:
+
+1. `bgfx`: https://github.com/cherryridge/dep_bgfx/releases/latest
+2. `SoLoud`: https://github.com/cherryridge/dep_soloud/releases/latest
+3. `LuaJIT`: https://github.com/cherryridge/dep_luajit/releases/latest
+3. `V8`: https://github.com/cherryridge/dep_v8/releases/latest
+3. `Wasmer`: https://github.com/cherryridge/dep_wasmer/releases/latest
+
+Download archives that match your operating system and processor architecture. You will probably need to download both `debug` and `release` builds if you want to set up a development environment. If you only want to build CherryGrove and use it, only download `release` builds.
+
+:::note
+#### Tips about bgfx's `shaderc`
+
+1. The bgfx dependency has a shader compiler (`shaderc`) in it, which will be invoked post-build. If you see some errors about execution permission, you might need to run `chmod +x lib/bgfx/<debug|release>/shaderc`.
+2. On Windows arm64, shader compiler (`shaderc.exe`) is actually an x64 build because of some weird incompatibility errors building it targetting arm64 Windows. It should work fine unless you're using an older version of arm64 Windows 10, which is really rare.
+:::
+
+Upon decompressing, the files inside should look like this:
+
+```
+├───📁 include/
+│   ├───📁 <dependency_name>/ (optional)
+│   │   └───...
+│   ├───📁 <dependency_name2>/ (optional)
+│   │   └───...
+│   └───📄 (...).<h|hpp|hh> (optional)
+├───📄 <library_name>.<lib|a>
+├───📄 <library_name>.pdb (optional)
+├───📄 <library_name2>.<lib|a> (optional)
+└───📄 VERSION.txt
+```
+
+Put all of the files and folders into `libs/<dependency_name>/<debug|release>`. You should see a `.gitignore` file inside each destination folder.
+
+### Additional Dependencies for Linux
+
+For Linux, there are some dependencies you also need to install:
+
+```bash
+sudo apt install pkg-config libx11-dev libwayland-dev wayland-protocols libxkbcommon-dev libxkbcommon-x11-dev libxrandr-dev libxinerama-dev libgl1-mesa-dev x11proto-core-dev libxcursor-dev libxi-dev libgl-dev libasound2-dev libjack-jackd2-dev
+```
+
+## Generate Build System Files
+
+### Use Ninja (Recommended)
+
+CherryGrove uses Ninja as low level build system on all platforms by default because of its compatibility and versability. If you want to build CherryGrove without tuning your IDE, download Ninja at: https://github.com/ninja-build/ninja/releases, or use your package manager: https://github.com/ninja-build/ninja/wiki/Pre-built-Ninja-packages.
+
+If you don't want to download *yet another piece of software*, don't be worry. C++ toolchain is a wonderful place and many IDEs come with Ninja. Just skip to below and you will find out that both Microsoft Visual Studio and CLion come with Ninja by default\*.
+
+### Use System/IDE-Provided Build Toolchain
+
+<Tabs groupId="os">
+    <TabItem value="windows" label="Windows">
+        If you are using CLion, enable `windows-<architecture>-<mode>` profiles in Open Project Wizard, and press OK. Wait for CLion to generate build system files.
+
+        If you are using Microsoft Visual Studio, open it up and choose Open a local folder, then select `cherrygrove`, or in blank window (continue without code) choose File > Open > Folder... / CMake..., then select `cherrygrove` or `cherrygrove\CMakeLists.txt`.
+
+        Wait for Visual Studio to generate solution. Switch to `windows-<architecture>-<mode>` configurations if needed.
+    </TabItem>
+    <TabItem value="linux" label="Linux">
+        Generate build system files (which is `gmake` in most cases) from CMake using these commands, notice that `gmake` is a single-configuration build system, so specify build mode:
+
+        ```bash
+        cd cherrygrove
+        mkdir out
+        cd out
+        cmake -DCMAKE_BUILD_TYPE=<Debug|Release> ..
+        ```
+    </TabItem>
+    <TabItem value="macos" label="MacOS">
+        If you are using CLion, enable `macos-<architecture>-<mode>` profiles in Open Project Wizard, and press OK. Wait for CLion to generate build files.
+
+        If not, generate XCode build system files from CMake using these commands: (Yep XCode doesn't come with Ninja)
+
+        ```bash
+        cd cherrygrove
+        mkdir out
+        cd out
+        cmake ..
+        ```
+    </TabItem>
+</Tabs>
+
+## Build CherryGrove
+
+You can deduce your build system by the software you're using, or by the build system files generated inside of `out` directory.
+
+<Tabs groupId="buildsystem">
+    <TabItem value="vs" label="Visual Studio">
+        Ensure the configuration is correct, then switch build target to `CherryGrove.exe` and choose Build > Build `CherryGrove.exe`.
+    </TabItem>
+    <TabItem value="clion" label="CLion">
+        Ensure the configuration is correct, then choose your desired profile and press Build 'CherryGrove'.
+    </TabItem>
+    <TabItem value="make" label="Make/GMake">
+        Run this command in `out` directory to build:
+
+        ```bash
+        make
+        ```
+    </TabItem>
+    <TabItem value="ninja" label="Ninja">
+        Run this command in `out` directory to build:
+
+        ```bash
+        ninja -C CherryGrove
+        ```
+    </TabItem>
+    <TabItem value="xcode" label="XCode">
+        If you're using XCode IDE, open the generated `.xcworkspace` or `.xcodeproj` in Xcode. Adjust Scheme in the top toolbar, select the desired build mode configuration, If you're using it through the command line, run:
+
+        ```bash
+        TODO: MacOS
+        ```
+    </TabItem>
+</Tabs>
+
+## Product Explanation
+
+For default CMake presets, the products are located in `out/<os>-<architecture>-<mode>`. CherryGrove is monolithic, i.e. everything is in `CherryGrove` executable, **except for:**
+
+1. Shaders in `shaders` folder.
+2. Assets in `assets` folder.
+
+Copying `assets`, `shaders` and `CherryGrove` executable to another place and they should just work.
+
+:::note
+For packing CherryGrove to ship to end user, visit the next document about [packing](packing).
+:::
+
+## Troubleshooting
+
+### Downloading
+
+1. It takes forever to clone CherryGrove.
+    - Unfortunately there is no way to fix this because CherryGrove simply uses a lot of Git submodules and they also have many submodules inside of them. Under a typical network environment, cloning CherryGrove would take 1~5mins.
+
+2. Server timeout/unexpected EOF/other network issues while cloning
+    - Simply retry using a better network. It's recommended to remove any downloaded files before retrying.
+    - It seems that GitHub is partially blocked in your region. Consider using a proxy. Notice that Git in command prompt/bash won't automatically pick up system proxy, so you might need to configure it using:
+        ```bash
+        git config --global http.proxy http://<proxy_host>
+        git config --global https.proxy https://<proxy_host>
+        ```
+    - If you're still not able to clone CherryGrove using command line, you are in *really* bad luck: **You need to manually download code from GitHub.com webpage recursively for every Git submodule dependencies, as well as the dependencies of these dependencies**. You are a legend if you managed to do so.
+
+### Building
+
+1. CMake failed to generate project files
+    - If you're using Linux, and the error message contains `not found`, check if you had installed the [OS-specific dependencies](#additional-dependencies-for-linux).
+    - If the error message contains `CMAKE_ASM_NASM_COMPILER`, [download the NASM compiler](#nasm).
+
+### Testing
+
+1. CherryGrove won't start
+    :::warning
+    It's a known bug that CherryGrove won't start under a directory path that has non-ASCII characters.
+    :::
+    - Try to locate and inspect log files like `CherryGrove-<timestamp>.log` in `logs` folder near the executable. If you believe that a bug had occured, consider reporting to us.
+    - You can also try to debug since you have all the sources.
+
+2. The GUI is in a bad shape/is flickering/is wrongly scaled
+    - CherryGrove is still in a very early stage of development. For now (2025.5), that's pretty normal. At least you saw something happening :).

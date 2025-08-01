@@ -1,0 +1,8 @@
+{
+    "label": "Tag",
+    "position": 112,
+    "link": {
+        "type": "doc",
+        "id": "pack/umi/tag/index"
+    }
+}

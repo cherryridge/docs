@@ -1,0 +1,142 @@
+﻿import DocCardList from "@theme/DocCardList";
+import { UmiFeature } from "@site/src/components/UMI";
+
+# UMI References
+
+Reference landing page for UMI (Unified Modding Interface) for content pack creation, with API in four frontend languages. Choose what you want to build today!
+
+<details>
+    <summary>Language pre-picker (optional)</summary>
+
+    Here is a language picker that you can toggle to set your preferred language. You can always change it later in actual API documentation.
+    <UmiFeature>
+        <>
+            <img className="twemoji" src="https://cdn.jsdelivr.net/gh/devicons/devicon@latest/icons/json/json-original.svg" /> [JSON](languages/json) is the simplest way to create content packs but you will face some limitations.
+        </>
+        <>
+            <img className="twemoji" src="https://cdn.jsdelivr.net/gh/devicons/devicon@latest/icons/javascript/javascript-original.svg" /> [JavaScript](languages/js) is the original thought of content pack system.
+        </>
+        <>
+            <img className="twemoji" src="https://cdn.jsdelivr.net/gh/devicons/devicon@latest/icons/wasm/wasm-original.svg" /> [WebAssembly](languages/wasm) is the way to create large and complex content packs or base libraries with high performance.
+        </>
+        <>
+            <img className="twemoji" src="https://cdn.jsdelivr.net/gh/devicons/devicon@latest/icons/lua/lua-original.svg" /> [Lua](languages/lua) is mostly an industry-compatible way to create content packs and is generally not recommended.
+        </>
+    </UmiFeature>
+</details>
+
+## Gameplay
+
+<DocCardList
+    className="desc-lg"
+    items={[
+        {
+            type: "link",
+            href: "/pack/umi/block",
+            label: "Block",
+            description: "Register blocks with unique properties."
+        },
+        {
+            type: "link",
+            href: "/pack/umi/entity",
+            label: "Entity",
+            description: "Register entities with, uh, unique properties."
+        },
+        {
+            type: "link",
+            href: "/pack/umi/composite",
+            label: "Composite",
+            description: "Register entities that have multiple body parts, like vehicles or complex creatures."
+        },
+        {
+            type: "link",
+            href: "/pack/umi/structure",
+            label: "Structure",
+            description: "Register a collection of blocks, entities and other structures to manage them as a whole."
+        },
+        {
+            type: "link",
+            href: "/pack/umi/global",
+            label: "Global State",
+            description: "Manage the global data of the game world."
+        },
+        {
+            type: "link",
+            href: "/pack/umi/worldgen",
+            label: "World Generation",
+            description: "Create world generation algorithms, fill blocks, biomes and place structures."
+        }
+    ]}
+/>
+
+## Player Interaction
+
+<DocCardList
+    className="desc-lg"
+    items={[
+        {
+            type: "link",
+            href: "/pack/umi/text",
+            label: "Text",
+            description: "Manage text and localize your content pack."
+        },
+        {
+            type: "link",
+            href: "/pack/umi/texture",
+            label: "Texture",
+            description: "Register texture and use them in a dynamic way."
+        },
+        {
+            type: "link",
+            href: "/pack/umi/sound",
+            label: "Sound",
+            description: "Integrate audio effects and music to the game."
+        },
+        {
+            type: "link",
+            href: "/pack/umi/gui",
+            label: "GUI",
+            description: "Compose your own GUI with widgets and layouts."
+        }
+    ]}
+/>
+
+## Utility
+
+<DocCardList
+    className="desc-lg"
+    items={[
+        {
+            type: "link",
+            href: "/pack/umi/component",
+            label: "Component",
+            description: "Register components to modularize your code, or create a reusable library."
+        },
+        {
+            type: "link",
+            href: "/pack/umi/tag",
+            label: "Tag",
+            description: "Register and use tags to categorize and maintain compatibility between content packs."
+        },
+        {
+            type: "link",
+            href: "/pack/umi/template",
+            label: "Template",
+            description: "Master the power of templates to create content quickly."
+        }
+    ]}
+/>
+
+## Paid Creator Features
+
+<DocCardList
+    className="desc-lg"
+    items={[
+        {
+            type: "link",
+            href: "/pack/umi/account",
+            label: "Account",
+            description: "Validate if the user has access to your paid content pack."
+        }
+    ]}
+/>

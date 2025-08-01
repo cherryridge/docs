@@ -1,0 +1,35 @@
+﻿---
+sidebar_position: 3
+---
+
+# CGNBT
+
+## Why?
+
+If you have just read [Save the World](save-the-world.mdx), you might be confused about why are we making our own file format alongside with a KV database. There are mainly two applications:
+
+1. Official portable exported data in `.cgr` format to avoid the various structure export formats Minecraft community has experienced in the game's early stage, like schematic.
+
+2. `level.dat` replacement. CherryGrove's equivalent is `world.cgb`, which stores all the out-of-game metadata of the world.
+
+And the reason why we don't use JSON is that it's very slow.
+
+Also we don't use (Minecraft) NBT, because NBT specifications' license is not clear, and NBT has some design flaws that we want to avoid. CGNBT specifications' license is clear as all documentations in this website: Just scroll to the bottom of the page, [CC-BY-4.0](https://creativecommons.org/licenses/by/4.0). Basically do WTF you want with it, as long as you give the credit to this website.
+
+## What's Behind the Specifications
+
+The CGNBT specification is one of the very first document to be written in this website. It's developed in an early stage, because we had thought that we would need a custom file format to save the world. It's as bad as you can imagine, but we designed it anyways.
+
+So CGNBT is designed as a direct replacement of NBT, which need to store everything in a world with arbitrary content packs randomly poking into the data, so we need to have a more dynamic way to support a wider range of requirements.
+
+Our first thought is to eliminate [the limit of the type of arrays](https://minecraft.wiki/w/NBT_format#:~:text=%5BByte%20Array%5D,2s%2C3i%2C4l%5D). We need a place to store the type of the array, which is really annoying when you're spending one whole byte storing the primary type. However, we noticed that NBT's type count doesn't even exceed 16. That means we can use the higher 4 bits to store the primary type, and lower 4 bits to store the secondary type. Also, the now idling lower 4 bits when it's not an array can be used as a convenient payload to eliminate even more bytes in small types like `Bool`. And why stop here utilizing only one bit? So we also made a `Hexadecimal` type.
+
+Later we realized that this design might cost us a huge performance penalty by requiring us to backtrack the file cursor, but luckily we found a way around it and we successfully implemeted CGNBT with forward-only readers. And also luckily, writing CGNBT also only requires a forward-only writer.
+
+Then it all came to an end when we realized Java's storage system is not good and we need to use a KV storage. So CGNBT is kind of obsolete now, with only usages being `world.cgb` for world metadata and more stray `.cgb`s for exporting structures. But we still keep it around because it's still fine in these cases.
+
+---
+
+To see the specifications, please refer to the [CGNBT Specifications](../references/format/cgnbt).
+
+To see how we managed to save the world, please refer to [Save The World](save-the-world).

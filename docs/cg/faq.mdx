@@ -1,0 +1,181 @@
+﻿import Admonition from "@theme/Admonition";
+
+# FAQ
+
+:::tip
+To get answers about the big **WHY** or the underlying ideas and the stories behind CherryGrove, please check out the [Genesis](design/genesis) page.
+:::
+
+## General
+
+### Where to download/play?
+
+Please check out the [home page of CherryGrove](https://cherrygrove.dev) for downloads.
+
+Note that CherryGrove has dropped support plan for WebAssembly platform via Emscripten, so we can't play it directly in browsers :(. [More info](overview#supported-platforms).
+
+### Where to look for content packs?
+
+Currently there isn't a place for content pack showcases. You might need to search through GitHub to find some.
+
+## Development
+
+### How can I contribute to the project?
+
+Thank you for your interest. Please check out the [Contributing](contributing) page for more infomation.
+
+### Why not use Rust for such a modern project?
+
+Because Rust is too opinionated. C++ is wonderful because it's so unopinionated and flexible and allows ourselves to establish the most efficient and clear ways to do specific things.
+
+Think about it: There is X ways in total that developer can do a thing, and Y ways that is dangerous and will cause bugs, especially memory-related bugs; P ways that are safe; and Q ways that are in a gray area: They will cause bugs if not used carefully, or under certain circumstances. Y, P and Q are not intersected and complete subset of X. Designing a good programming language is trying to pick a custom subset of X that maximizes P and maximizes safe Q by conditionally allowing them, and don't include any Y. But the real world is too complex to allow perfect subsets. There are two common approaches: pick more Q and even some of Y to ensure P is maximized, and pick less Q, even giving up some P to ensure Y is minimized. C++ is the former and Rust is the latter. So Rust is born to be less performant and less flexible because it just can't do something C++ can do, even when they are completely safe in the specific context.
+
+And also, Rust's grammar is biased towards functional programming, and functional programming is not the best way to write a game framework.
+
+What's more, Rust vs C++ is just like machinery vs craftsmanship. Both of them can be really modern, it's the flexibility (and subsequently, development speed) that has separated them apart. We are code craftsmen, and we like doing creative (even sometimes hack) things to tame the computer. Here is where our sense of achievement come from, which Rust has eliminated most of to keep ourselves focus on the development task and make us a easily replacable cog in the company machine.
+
+Don't even mention the ecosystem.
+
+## Background Information
+
+### Why this name?
+
+On the surface, it's just [`minecraft:cherry_grove`](https://minecraft.wiki/w/Cherry_Grove). It's an adorable biome filled with flowers, and it has my favorite newer soundtrack: [`Echo in the Wind`](https://minecraft.wiki/w/Echo_in_the_Wind).
+
+Upon digging deeper, it's root is from [AboveBedrock SMP](https://www.abovebedrock.com) Season 8 (a tiny private Minecraft: Bedrock server established by me back in 2018 to play with my friends), which started in July 2024. There is a district called "Yinghualing (Cherry Ridge) District". The parliament of the server is in the district, and it's the highland of the city, with a cherry grove biome.
+
+CherryGrove's genesis was at Nov 15, 2024. There is even a "headquarter" of CherryRidge in-game, which address is the address of the GitHub homepage of CherryRidge, No. 2 Lingnan Avenue, Yinghualing District. Opens 24-hour for visiting :)
+
+### What does the logo mean?
+
+When LJM12914 created the GitHub organization `cherry-grove` as the first organization name, the default icon of that organization fit perfectly for the project, so it became ***exactly*** the current logo of CherryGrove.
+
+This logo symbolizes a tree (possibly a cherry tree) growing on a crack of a cliff/ledge. The green color (CherryGrove green, `#5bd093`) is also generated alongside with the default icon.
+
+The logo also shows a tendency to converge towards the center, which we personally think that symbolizes the open-source spirit of commitment to freedom, collaboration, and transparency.
+
+Some people might perceive the logo as a face, even a modified creeper face or a totem of undying. The logo has nothing to do with them.
+
+## Licensing
+
+### What license is applicable for me to do `x`?
+
+Quick table for actions you can do with CherryGrove (not legally binding, PFNC = PolyForm Noncommercial License 1.0.0, Commercial = commercial license):
+
+<table style={{textAlign: "center"}}>
+    <thead><tr>
+        <th></th>
+        <th>PFNC / Commercial</th>
+    </tr></thead>
+    <tbody>
+        <tr>
+            <th>I just download and play the game as-is.</th>
+            <td>PFNC</td>
+        </tr>
+        <tr>
+            <th>I play the game with whatever content packs I somehow got.</th>
+            <td>PFNC</td>
+        </tr>
+        <tr>
+            <th>I play the game with my own content pack.</th>
+            <td>PFNC</td>
+        </tr>
+        <tr>
+            <th>I distribute my own free of charge content package, open source or not.</th>
+            <td>PFNC</td>
+        </tr>
+        <tr>
+            <th>I redistribute the original CherryGrove free of charge, compiled or not.</th>
+            <td>PFNC</td>
+        </tr>
+        <tr>
+            <th>I distribute modified CherryGrove free of charge, compiled or not, open source or not.</th>
+            <td>PFNC</td>
+        </tr>
+        <tr>
+            <th>I sell content packs, compiled or not, open source or not.</th>
+            <td>**Commercial**</td>
+        </tr>
+        <tr>
+            <th>I sell modified (by changing source code of) CherryGrove, compiled or not, open source or not.</th>
+            <td>**Commercial**</td>
+        </tr>
+        <tr>
+            <th>I redistribute the original CherryGrove for profit, compiled or not.</th>
+            <td>**Commercial**</td>
+        </tr>
+        <tr>
+            <th>I use the log, screenshot, or video captures produced by CherryGrove, for profit or not.</th>
+            <td>PFNC</td>
+        </tr>
+    </tbody>
+</table>
+
+### What counts as "commercial purpose for CherryGrove"?
+
+Quick table for some edge cases (not legally binding):
+
+<table style={{textAlign: "center"}}>
+    <thead><tr>
+        <th></th>
+        <th>Commercial Purpose?</th>
+    </tr></thead>
+    <tbody>
+        <tr>
+            <th>I monetize gameplay contents such as maps, videos and livestreams.</th>
+            <td>No, but check used content packs' licenses.</td>
+        </tr>
+        <tr>
+            <th>I monetize on original modding toturials / survival toturials.</th>
+            <td>No. In fact you can even adapt from this site because it's CC-BY.</td>
+        </tr>
+        <tr>
+            <th>I give out CherryGrove installer for free and publicly available in any platform.</th>
+            <td>No</td>
+        </tr>
+        <tr>
+            <th>I give out CherryGrove installer for free but *require* the users to follow me, hit like button, or do anything that can result in a financial gain for myself.</th>
+            <td>**Yes!** The word *require* is the key. No requirement, not commercial.</td>
+        </tr>
+        <tr>
+            <th>I give out CherryGrove installer for free but *require* the users to see ads that can result in a financial gain for myself.</th>
+            <td>**Yes!** Same as above. Default platform ads are fine.</td>
+        </tr>
+    </tbody>
+</table>
+
+## Legal Concerns
+
+### Is it legal to `x`?
+
+Assume that `x` is:
+
+1. Create a game that feels like Minecraft?
+2. Create a game that shows the same spirit of Minecraft?
+3. Create a game with similar mechanism to Minecraft?
+
+The answer is, YES, it's legal.
+
+Copyright, trademark, patent and any other IP protection mechanisms aim to protect *the real things*, instead of protecting the *thoughts or simple game mechanisms*. For instance, they protect the source code as well as the assets of Minecraft, so we definitely can't use them. But they don't, and won't protect "a game that consists of blocks and boost your creativity", nor "a game mechanism of mining using a pickaxe".
+
+And, there have been A LOT OF Minecraft clones/knockoffs anyway.
+
+However there are two caveats that should be noticed:
+
+1. Some of the Minecraft's assets are not license bundled into the game. C418's soundtracks' copyright is partially in C418's hand. *The End Poem* was CC0'd by its author, which means CherryGrove can use it freely.
+
+2. As we all know, tech giants can sometimes ignore the law and take down whatever they dislike. If we've grown too big, they might strike. However everything Microsoft has taken down had involved with at least one of these no-no acts:
+
+    1. They used / are meant to enable users to use Minecraft's propriety code / assets.
+    2. They used confusing branding in logos or names.
+    3. They were straight up wrapping or pirating Minecraft, potentially with a custom resource pack to hide it.
+
+    We might just avoid all of that and prey for justice. But our advantage lies in the source available and original nature. If we're DMCA'd on GitHub (which is again manipulated by Microsoft), we can migrate to other Git platforms or continue to develop in private.
+
+### Is it plagiarism to make CherryGrove?
+
+Quote unquote "sort of", but it's well in the bounds of reasonable imitation.
+
+Minecraft is a great game and it's inspired countless games. Plagiarism does not equal to imitation, and not equal to remake as well. CherryGrove can be seen as the [Unciv](https://github.com/yairm210/Unciv) of Minecraft—A more open remake of it, AT MOST.
+
+For more about what is CherryGrove, check out the [Genesis](design/genesis) page.

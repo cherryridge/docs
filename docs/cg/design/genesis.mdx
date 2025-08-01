@@ -1,0 +1,58 @@
+﻿---
+sidebar_position: 12914
+title: Genesis
+---
+
+# Genesis of CherryGrove
+
+## Why?
+
+The biggest question to ask is obviously, **why**. Well, [a youtube search](https://www.youtube.com/results?search_query=Minecraft+Critique) can give you pretty much every reason about why me and a lot of other people want to make *yet another* block game.
+
+But deep in mind, I want to have a game existing there that boosts my future child's creativity, teachs them to feel life in an early age in an environment more inclusive than the real society, and to lay the foundation for education. Most importantly, not controlled by tech giants and not plagued by microtransactions.
+
+If it's not financially viable for companies to create that and almost every nonprofits are partnering with Microsoft to create content in their walled garden, I will create it myself.
+
+Honestly, making a block game is not exactly difficult compared to making a regular game, because most of the content is simply *blocks*. The most difficult part of a game is always game assets, which are essentially artworks and can't be easily created with a straight mind.
+
+## Mindset
+
+### Unopinionated
+
+I want to **avoid something I feel bad of the former game as much as possible, whilst enforcing as little personal opinions onto CherryGrove's users as possible**.
+
+This is done by separating the game into the framework and the vanilla content pack. The framework is meant to be unopinionated and only provides bare-bone functionalities. You can't even create worlds if there is no content pack installed. That's not particularly a bad thing though.
+
+This mindset also contributed to the fact that CherryGrove's modding API is quite low-level. If you really want to make a brand new game and remove the Vanilla pack entirely which contains a surprising amount of basic features like biomes (templated climate), weather, hostile mob API etc, you will be able to, but you need to face basically the same amount of problems others had faced with. That's a fair deal because we shouldn't decide how you should make your game.
+
+### Customizable
+
+CherryGrove is born to be hightly customizable. It's the key to CherryGrove and the biggest reason I want to develop it instead of making more Minecraft mods/addons.
+
+To clearify things up, here is what I mean:
+
+1. Minecraft Java has got many modding APIs and its own pack and command system is really well-designed, but it has a very heavy historical tech debt including using Java and former bad code practices, and it seems that it won't get enough support to overcome those caveats. In fact there is a widespread rumor that Mojang is relying on community performance mods to keep its game running normally on low-end devices, instead of trying to improve the performance themselves. Plus there is no mobile version and it just won't work with a touch screen.
+
+2. Minecraft Bedrock is almost not customizable until the Scripting API came out. Even in the post-scripting era of Bedrock mod development, behavior packs can still only provide very weak tweaks towards vanilla gameplay. By 1.21.70 when I'm writing this, they can't modify almost every property of existing elements and custom blocks behave completely different from intrinsic blocks. So weak that they can't even change the player's mode of movement or receive an event when a custom block is charged by redstone. What's more, the Scripting API on JavaScript by QuickJS is ironically really slow.
+
+CherryGrove is born to solve these problems. It needs to be cross-platform, hightly customizable and as high performance as possible on top of that.
+
+There is a "impossible triangle" among customizability, performance and developer experience when it comes to modding. CherryGrove orders them exactly as that. It gives developers basic building blocks and then gives them a way to achieve better experience.
+
+### Tool, not Game
+
+CherryGrove itself is not a game, but more like a tool (framework, engine, etc.) to enable metacreativity. The gaming part is separated to the Vanilla content pack, and it is a big pack with a lot of subpacks, each one focusing on a single aspect of gameplay. Here I'm trying to solve *yet another problem* of Minecraft many people seem to ignore, probably because we all take it for granted when it comes to computer software: **You must accept the "you consider it bad" features in an update if you want to have the good features from then on.** An almost overdiscussed instance is the [1.9 combat cooldown](https://www.youtube.com/results?search_query=1.9). As above, CherryGrove Vanilla is grouped into subpacks so that you are able to freely disable certain features, provided the dependency tree is good.
+
+## The Opportunity
+
+The oppounity for CherryGrove comes from four sides: my free time, the internal competition in the playerbase of Minecraft, Mojang's self-destructive behaviors, and the rise of AI.
+
+Many players have to become technical to play "normally" with others, and we are not going to comment on that here, but this phenomenon objectively makes more and more people realize the limitations of Minecraft as a game engine and creative platform, mainly from its long history and its rough early development.
+
+In addition, Mojang's handling of EULA and community relations has been widely criticized over these years, such as the anti-P2W movement on YouTube and Mojang's subsequent explanation of EULA: child gambling is completely allowed as long as there are no real slot machines or other IRL gambling items; meanwhile guns and other weapons are threatened to be banned, and gunfight servers that have been running normally for years are required to be shut down or modified so that no real guns are used. Furthermore, Mojang's slow updates and it ignoring community requests have also disappointed more and more players. But this is also mainly a PR issue, such as the Mob Vote.
+
+Finally, the rise of AI has given us better tools to accelerate development, making the startup phase of CherryGrove much faster, and has greatly decrased the demand for human resources.
+
+So, I decided that it's finally the time to create a new platform for creativity, a new game engine that may outlive Minecraft to become the next generation of it, and a new platform that is completely controlled by the community, not by a for-profit company.
+
+The god said, "Let there be CherryGrove", and so it was.

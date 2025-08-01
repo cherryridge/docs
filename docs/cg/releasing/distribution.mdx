@@ -1,0 +1,117 @@
+﻿---
+sidebar_position: 3
+---
+
+# Distribution Situation
+
+There are two ways to distribute softwares today: independent distribution and package managers/stores.
+
+CherryGrove supports multi-instancing. More on that at [multiple instance support](#multiple-instance-support).
+
+## Windows
+
+### Independent Distribution
+
+Currently the best practice is to use the NSIS installer, which is also an instanced installer and users can choose from a portable installation or a normal installation.
+
+### Package Managers & Stores
+
+There is really no good package manager for Windows, so we only plan to distribute on Microsoft Store.
+
+## Linux
+
+### Independent Distribution
+
+To simplify the situation, we use AppImage for all Linux distros. If users want to multi-instance, they can use the archive or run `--appimage-extract` to extract the AppImage to a directory.
+
+Note that AppImage itself treats every AppImage as a single, global instance, so it will not allow you to isolate the data for two fundamentally separated AppImage files. It's a limitation, but more like a intended feature. We're simply too special.
+
+### Package Managers & Stores
+
+To simplify the situation, we only plan to distribute on Snap and Flatpak.
+
+## MacOS
+
+### Independent Distribution
+
+We use DMG files. If users want to multi-instance, they can use the archive. //todo: Verify if archive approach works, or we need to respect command lines and working directories?
+
+### Package Managers & Stores
+
+We plan to distribute on Mac App Store when we can afford it.
+
+## Android
+
+### Independent Distribution
+
+CherryGrove provides the main APK files, as well as APKs with different package names for every version for some basic multi-instancing support.
+
+Note that CherryGrove don't support x86 or armv7a architectures. See [supported platforms](../overview#supported-platforms).
+
+### Package Managers & Stores
+
+We plan to distribute on Google Play and F-Droid.
+
+## iOS & iPadOS
+
+### Independent Distribution
+
+Are you serious?
+
+### Package Managers & Stores
+
+We plan to distribute on App Store when we can afford it.
+
+## Multiple Instance Support
+
+As an game that tries to be as "open", CherryGrove needs to support multi-instancing, i.e. users can install and **run** multiple **fundamentally separated** instances of CherryGrove on the same device. This is a very important feature, however some platforms are just hostile to duplicated installations.
+
+The most easy way for multi-instancing is the green software approach, i.e. a compressed archive that users can decompress to a directory and run the executable directly. Another way is the "instanced installer", which can either be a self-extracting archive or a installer that allows users to choose the installation directory and disable registry entries and shortcuts, or an APK with a different package name on Android. Provided that users can run executables in custom directories, it would be a good way for now, but it's a luxury to do so on some platforms. We plan to replace this approach entirely with Beehive in the future.
+
+But theoretically the best way is an instance manager like MultiMC or the official Minecraft Launcher. We plan to develop one called [Beehive](https://github.com/cherryridge/Beehive) in the future. It's basically MultiMC but for CherryGrove that allows users to install, manage, run and uninstall multiple instances of CherryGrove. It is currently in development planning. Don't expect it to be available soon.
+
+## Platform-Agnostic Distribution
+
+### Beehive
+
+Support table:
+
+<details>
+    <summary>**Atlas**</summary>
+    - ☑️: Fully supported.
+    - ✅: Theoretically supported (functionality not verified).
+    - 🚧: Working in progress.
+    - 🚩: Planned to support.
+    - 🚫: No plan to support/not applicable.
+</details>
+
+<table style={{textAlign: "center"}}>
+    <thead><tr>
+        <th>Windows</th>
+        <th>Linux</th>
+        <th>MacOS</th>
+        <th>Android</th>
+        <th>iOS</th>
+        <th>iPadOS</th>
+    </tr></thead>
+    <tbody>
+        <tr>
+            <td>🚩</td>
+            <td>🚩</td>
+            <td>🚩</td>
+            <td>🚩</td>
+            <td>🚩</td>
+            <td>🚩</td>
+        </tr>
+    </tbody>
+</table>
+
+### Steam
+
+That's a last resort. It's not a good way to distribute a game that's not like a game and more like a tool. It's planned anyway, but not a priority.
+
+We still don't know whether we can distribute Beehive on Steam, but we plan to do so instead of distributing CherryGrove itself.
+
+### itch.io
+
+That's also a last resort. We also don't know about whether we can distribute Beehive on it.

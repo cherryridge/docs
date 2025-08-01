@@ -1,0 +1,72 @@
+﻿---
+sidebar_position: 1
+---
+
+# The Simulation
+
+This is the core of CherryGrove. We read input, update the state, and render output here.
+
+Let's take a look at Minecraft Java (oversimplified):
+
+1. Update TPS manager
+2. Run datapack functions with `#tick` or `#load` on reload
+3. Per-dimension tick (overworld -> nether -> end -> custom)
+    1. Update world border
+    2. Update time, weather and daylight
+    3. Run scheduled commands
+    4. Run scheduled block updates
+    5. Run scheduled fluid updates
+    6. Update chunk load level
+    7. For all chunks that are loaded, execute at every applicable position pseudo-randomly (oversimplified again):
+        1. Run mob spawn logic
+        2. Update ice and snow
+        3. Execute random tick
+    8. Send block updates to clients
+    9. Update POI
+    10. Unload chunks
+    11. Execute block events
+    12. For all non-passenger entities:
+        1. Execute despawn logic
+        2. Update entity
+        3. Update its passengers
+    13. Update block entities
+4. Send updates to clients
+5. Handle clients' incoming packets
+6. Send player info to clients
+7. Autosave every 6000 ticks
+
+The most important thing we take from this is not from any of the steps, but they are sequential and single-threaded, for everything in the world. So we might need to look at Folia and some truly multi-threaded games for multi-threading approach when we develop the server software, [CherrySlope](https://github.com/cherryridge/CherrySlope), which won't be released till 2100. For now the simulation system is single-threaded because in single player world we pretty much only have one place in the world that is ticking.
+
+Another thing is that the ticking function is very specific and don't provide a lot of insight to how to create a general simulation system. I even removed some of them to simplify it. But we can still find a pattern:
+
+1. The order to update dimension can be arbitrary, therefore it can also be multi-threaded.
+2. We probably should determine the chunks that are loaded first, then update them, then unload some of them.
+3. We should use a neighborhood update system like Java instead of a global update system like Bedrock. It will save a lot of performance and enable more complex in-game contraptions to be made.
+
+After a lot of thinking, I came up with a design like this:
+
+1. Update TPS manager
+2. Send start signal to all loaded dimension threads
+3. In every dimension thread:
+    1. Update world border
+    2. Update gametime (it's a super-rare intrinsic state! Yay!)
+    3. Update global state
+        1. Call applicable content packs' `onGlobalUpdate` function
+        2. Merge results
+        3. Apply states
+    4. Update chunk load level
+    5. For all loaded chunks, execute at every applicable position pseudo-randomly:
+        1. Determine every entity that is in the chunk
+        2. For all blocks that are marked `tickable`, call their `onBlockTick` function
+        3. For all structures that are marked `tickable`, call their `onStructureTick` function
+        4. For all entities that are marked `tickable`, call their `onEntityTick` function
+        5. For all composites that are marked `tickable`, call their `onCompositeTick` function
+        6. For all "things" that are marked `randomTickable`, call their `onRandomTick` function
+        7. Merge results from all updates
+        8. Apply states
+    6. Push interdimension events to dimension event queue
+4. Execute interdimension events and merge results
+5. Execute player input functions from `InputHandler`
+6. Render current state
+
+Surprisingly it's not "read input, update state, render output" but "update state, read input, render output". This is because multiplayer fairness. If we read input at the beginning, players with low latency will be able to modify the world state one tick earlier than players with high latency. Yes we're actually caring for the future multiplayer era.

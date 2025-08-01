@@ -1,0 +1,65 @@
+﻿# File Formats
+
+The files used (will be processed) by CherryGrove can be roughly divided into [text files](#text-file-formats) and [binary files](#binary-file-formats).
+
+Currently CherryGrove uses the file formats below:
+
+## Text File Formats
+
+### `.txt`
+
+CherryGrove uses it for simple configuration data storage.
+
+### `.json`
+
+CherryGrove uses it to store configurations and content packs uses it to mod the game directly or to store data.
+
+Also, `manifest.json` is used to identify whatever folders of interest, such as content packs or relocatable world saves.
+
+### `.js`
+
+Content pack code files.
+
+### `.lua`
+
+Content pack code files.
+
+## Binary File Formats
+
+### `.cgb`
+
+General [CGNBT (CherryGrove Named Binary Tag)](format/cgnbt) files.
+
+### `.wasm`
+
+Content pack code files.
+
+## Binary File Formats (Compressed)
+
+### `.cgw`
+
+Compressed CherryGrove world folder, similar to `.mcworld`.
+
+### `.cgp`
+
+Compressed CherryGrove content pack folder, similar to `.mcaddon`/`.mcpack`.
+
+### `.cgr`
+
+CherryGrove relocatable game save, similar to schematic or `.mcstructure`, but is a compressed folder with `manifest.json` that indexes potentially multiple `.cgb` stored structures.
+
+### `.zip`
+
+CherryGrove will try to recognize `.zip` files as `.cgw`, `.cgp`, or `.cgr` files.
+
+### `.7z`
+
+CherryGrove will try to recognize `.7z` files as `.cgw`, `.cgp`, or `.cgr` files.
+
+### `.tar.gz` / `.tgz`
+
+CherryGrove will try to recognize `.tar.gz` / `.tgz` files as `.cgw`, `.cgp`, or `.cgr` files.
+
+### `.zst` / `.tar.zst`
+
+CherryGrove will try to recognize `.zst` / `.tar.zst` files as `.cgw`, `.cgp`, or `.cgr` files.

@@ -1,0 +1,67 @@
+﻿---
+sidebar_position: 6
+title: Filesystem
+---
+
+# Filesystem Schema
+
+## Windows
+
+On Windows, we want to make it easy to launch multiple instances of CherryGrove. So instead of using the system global positions for storing captures, documents etc, we use a per-instance directory structure.
+
+The structure starts from the executable. Each executable file is locked to a single instance by `InstanceLock`. The directory structure is as follows:
+
+```
+<root folder>
+├───📁 assets
+├───📁 captures
+├───📁 logs
+├───📁 packs
+├───📁 saves
+├───📁 shaders
+├───📁 test
+├───📄 CherryGrove.exe
+├───📄 LICENSE
+├───📄 options.txt
+├───📄 README.txt (Filename is localized)
+└───📄 uninstall.exe
+```
+
+And `uninstall.exe` does exactly you think it does. It will remove the entire directory structure as well as the root folder, and it won't affect other instances.
+
+However this might cause the user can only uninstall the last instance they installed normally from the official installer from system settings, since the official installer will override the registry entry for the uninstaller every time it runs. **So this is pretty much only an early-age solution**. To avoid this, we plan to make a manager like MultiMC that can manage multiple instances of CherryGrove, and it will handle the uninstallation process for all instances. We will also provide a zip file for manual installation.
+
+## Linux
+
+On Linux, we use the XDG Base Directory Specification to determine where to store files. The directories are as follows:
+
+```
+$XDG_DATA_HOME/CherryGrove
+├───📁 assets
+├───📁 captures
+├───📁 logs
+├───📁 packs
+├───📁 saves
+├───📁 shaders
+├───📁 test
+├───📄 LICENSE
+├───📄 options.txt
+└───📄 README.txt
+```
+
+Where `$XDG_DATA_HOME` is usually `~/.local/share` but can be overridden by the user. If `$XDG_DATA_HOME` is not set, it defaults to `~/.local/share`.
+
+If the user wants to uninstall CherryGrove, they can simply delete the `CherryGrove` directory. This will not affect other instances of CherryGrove, as each instance will have its own directory.
+
+We also plan to provide AppImage support in the future to enable multiple instances of CherryGrove on Linux. This will allow users to run multiple instances without needing to install CherryGrove system-wide. Currently there's no plan for it to be distributed through Flatpak or Snap. More on this topic please visit [distribution](http://localhost:20240/distribution#package-managers--stores).
+
+## MacOS
+
+
+
+## Android
+
+
+
+## iOS & iPadOS
+

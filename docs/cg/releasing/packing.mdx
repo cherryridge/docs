@@ -1,0 +1,30 @@
+﻿---
+sidebar_position: 2
+---
+
+# Packing CherryGrove
+
+This tutorial will help you pack the installer of CherryGrove for each platform. All packing related resources are located under the `packing` directory.
+
+:::warning
+Remember to abide by the [terms](../../legal) when you want to distribute your builds.
+:::
+
+## Microsoft Windows
+
+CherryGrove currently uses NSIS (Nullsoft Scriptable Install System) to pack for installer on Microsoft Windows. Download and install it at: https://nsis.sourceforge.io/Download.
+
+NSIS uses `.nsi` script files to build the installer, which can be found at `packing/windows`. If you want to do a standard packing procedure, follow these steps:
+
+1. Build the **release** version of CherryGrove.
+2. Run `packing/windows/pack.bat` and wait for all language varieties to be built.
+
+Adjust the code in the scripts to create your custom procedures.
+
+## Linux
+
+CherryGrove currently uses AppImage to pack images for all Linux Distros.
+
+## MacOS
+
+CherryGrove uses create-dmg to pack images on MacOS.

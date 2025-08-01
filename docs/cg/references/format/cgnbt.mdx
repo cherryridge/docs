@@ -1,0 +1,246 @@
+﻿---
+sidebar_position: 1
+---
+
+# CGNBT Specifications
+
+2nd Edition (2025.7.11)
+
+## Introduction
+
+CherryGrove Named Binary Tag (CherryGrove 具名二进制标签) is a binary object storage format developed by CherryRidge for storing structured objects efficiently.
+
+The common file extension of CGNBT is `.cgb`.
+
+CGNBT's specification document is licensed under [CC-BY-4.0](https://creativecommons.org/licenses/by/4.0/legalcode.en), and [the implementation of CGNBT by CherryRidge](https://github.com/cherryridge/cgnbt) is free and open-source software licensed under [LGPL-2.1](https://www.gnu.org/licenses/old-licenses/lgpl-2.1.html#SEC1).
+
+CGNBT is inspired by [JSON](https://www.json.org/json-en.html), [Protobuf](https://protobuf.dev) and [(Minecraft) NBT](https://minecraft.wiki/w/NBT_format). Therefore, the specification may specifically state the differences between their behavior in some of the features.
+
+## Structure Overview
+
+The data is composed with a tree of **Tags**. Tags that are not a direct child of an `Array` tag are **Free Tags**, otherwise are **Embedded Tags**.
+
+Contrary to JSON and NBT, there is no root tag at the top of data tree in CGNBT. Therefore CGNBT data usually has multiple top-level tags.
+
+CGNBT files can be whole-file compressed in [Zstandard](https://facebook.github.io/zstd) or not compressed (plain hex).
+
+All not-compressed valid CGNBT files must have the magic letter `cGnbT`(`63 47 6E 62 54`) at the first 5 bytes.
+
+## Data Blocks
+
+A tag may have at most three data blocks: `head`, `name`, and `payload`.
+
+If applicable, this three data blocks always show up in the order as above.
+
+### `head` Data Block
+
+The `head` data block is primarily used to store the type of a tag.
+
+The `head` data block is exactly one byte long.
+
+All free tags must possess a `head` data block. As for embedded tags, see [`Array` Type](#array-type) for more information.
+
+The first 4 bits of `head` data block used as **Type Identifier** (`type`). All free tags must have a valid type identifier.
+
+The last 4 bits of `head` data block are used as **Convenient Payload** or **Second Type Identifier**. When `type` is `Bool` or `Hexadecimal`, this part acts as Convenient Payload; When type is `Array`, this part acts as Second Type; In other types, this part is discarded.
+
+### `name` Data Block
+
+The `name` data block is used to store the readable name of tag instances.
+
+The length of `name` data block is not fixed. The data block needs to be read before the length can be calculated.
+
+All free tags except for `ObjectEnd` type must possess a `name` data block.
+
+This data block uses variable string encoding (`VarText`). See [VarText Specifications](#vartext-specifications) for detailed informataion.
+
+### `payload` Data Block
+
+The `length` of payload data block is not fixed.
+
+See each tag type's specifications for this data block in the [Tag Types](#tag-types) section.
+
+## Tag Types
+
+### Overview
+
+| Decimal ID | Binary form of `type` | Readable Type Name | Description |
+| --- | --- | --- | --- |
+| 0 | 0000 | ObjectEnd | Ending tag of composite type |
+| 1 | 0001 | Object | Starting tag of composite type |
+| 2 | 0010 | IVarInt | Variable-length signed integer |
+| 3 | 0011 | UVarInt | Variable-length unsigned integer |
+| 4 | 0100 | Bool | One boolean value |
+| 5 | 0101 | Hexadecimal | One hexadecimal value |
+| 6 | 0110 | Float | One IEEE-754 single-precision floating-point number |
+| 7 | 0111 | Double | One IEEE-754 double-precision floating-point number |
+| 8 | 1000 | Array | Starting tag of array type |
+| 9 | 1001 | String | UTF-8 character sequence |
+| 10 | 1010 | Raw | Untyped one-byte data |
+
+### `ObjectEnd` type
+
+This tag type marks the end of a composite type.
+
+The file is invalid if an `ObjectEnd` tag can't be matched with one `Object` tag.
+
+| Data Blocks | `head` |
+| --- | --- |
+| Schema | `00000000` |
+| Note | Last 4 bits are ignored. |
+
+### `Object` type
+
+This tag type marks the start of a composite type.
+
+The range of the composite type lasts until the first occurence of `ObjectEnd`. If EOF is encountered before `ObjectEnd`, the file is invalid.
+
+| Data Blocks | `head` | `name` | `payload` |
+| --- | --- | --- | --- |
+| Schema | `00010000` | `VarText` | Content inside of the object |
+| Note | Last 4 bits are ignored. | Name of the tag instance. | Complete content of tags inside of the object. Skipped if there is none. |
+
+### `IVarInt` type
+
+This tag type represents a signed integer using the modified `VarInt` encoding and Zigzag encoding. See [VarInt Specifications](#varint-specifications) for more information about that.
+
+| Data Blocks | `head` | `name` | `payload` |
+| --- | --- | --- | --- |
+| Schema | `00100000` | `VarText` | `VarInt` |
+| Note | Last 4 bits are ignored. | Name of the tag instance. | A variable-length Zigzag encoded unsigned integer. |
+
+### `UVarInt` type
+
+This tag type represents an unsigned integer using the modified `VarInt` encoding. See [VarInt Specifications](#varint-specifications) for more information.
+
+| Data Block | `head` | `name` | `payload` |
+| --- | --- | --- | --- |
+| Schema | `00110000` | `VarText` | `VarInt` |
+| Note | Last 4 bits are ignored. | Name of the tag instance. | A variable-length encoded unsigned integer. |
+
+### `Bool` type
+
+This tag type represents a boolean value.
+
+This tag uses the **Convenient Payload** in the `head` data block to store the value. `0000` is `false`. Any bit combination other than `0000` is considered `true`.
+
+| Data Block | `head` | `name` |
+| --- | --- | --- |
+| Schema | `0100xxxx` | `VarText` |
+| Note | Last 4 bits are used as Convenient Payload. | Name of the tag instance. |
+
+### `Hexadecimal` type
+
+This tag type represents a hexadecimal value.
+
+This tag uses the **Convenient Payload** in the `head` data block to store the value.
+
+| Data Block | `head` | `name` |
+| --- | --- | --- |
+| Schema | `0101xxxx` | `VarText` |
+| Notes | Last 4 bits are used as Convenient Payload. | Name of the tag instance. |
+
+### `Float` type
+
+This tag type represents an IEEE-754 single-precision floating point number.
+
+| Data Block | `head` | `name` | `payload` |
+| --- | --- | --- | --- |
+| Schema | `01100000` | `VarText` | IEEE-754 float |
+| Notes | Last 4 bits are ignored. | Name of the tag instance. | Always 4 bytes & **little-endian** |
+
+### `Double` type
+
+This tag type represents an IEEE-754 double-precision floating point number.
+
+| Data Block | `head` | `name` | `payload` |
+| --- | --- | --- | --- |
+| Schema | `01110000` | `VarText` | IEEE-754 double |
+| Notes | Last 4 bits are ignored. | Name of the tag instance. | Always 8 bytes & **little-endian** |
+
+### `Array` type
+
+This tag type marks the start of an `Array` type.
+
+Contrary to NBT, the type of `Array` in CGNBT is specified using the **Second Type** in the `head` data block, and CGNBT doesn't require deep uniform type in each entries if they are `Object`s or `Array`s. That means that you can store different `Object`s or `Array`s with different inner structures or types in a single `Array`.
+
+The **Second Type** is also a 4-bit **Type Identifier**. It specifies the type the array contains. One array must consist of tags of the same type.
+
+Arrays can't be consisted of `ObjectEnd`.
+
+| Data Block | `head` | `name` | `payload` |
+| --- | --- | --- | --- |
+| Schema | `1000xxxx` | `VarText` | See the table below. |
+| Notes | Last 4 bits are used as Second Type. | Name of the tag instance. |  |
+
+| `payload` | `count` | `entries` |
+| --- | --- | --- |
+| Schema | An unsigned `VarInt`. | See below. |
+| Notes | The number of elements in the array. | Not presented if `count` is `0`. |
+
+Contrary to composite type, the data in `entries` is solely consisted of **Embedded Tag**s. Under every valid circumstances of the text above, the `name` data block is not presented in every embedded tags.
+
+If the `Array` contains `Bool` or `Hexadecimal` type, every tags in `entries` may contain only `head` data block. The **Type Identifier** is ignored. The **Convenient Payload** is the value of each entry.
+
+If the `Array` contains `Array` type, every tags in `entries` may contain `head` and `payload` data block. The **Type Identifier** (`1001`) is ignored. The **Second Type** and the `payload` data block is parsed according to [`Array` type](#array-type).
+
+If the Array contains `Object`, `IVarInt`, `UVarInt`, `Float`, `Double`, `String`, or `Raw` type, every tags in `entries` may contain only `payload` data block and is parsed according to their respective specifications.
+
+### `String` type
+
+This tag type represents a UTF-8 encoded character sequence.
+
+| Data Block | `head` | `name` | `payload` |
+| --- | --- | --- | --- |
+| Schema | `10010000` | `VarText` | See the table below. |
+| Notes | Last 4 bits are ignored. |  |
+
+| `payload` | `length` | `content` |
+| --- | --- | --- |
+| Schema | An unsigned `VarInt`. | UTF-8 sequence |
+| Notes | The size of `content` in **bytes**. | Not presented if `length` is `0`. |
+
+### `Raw` type
+
+This tag type represents a byte of untyped data.
+
+This type is frequently used with `Array` type to store a blob of raw data.
+
+It's generally not recommended to use this type to store data that can be stored using the types mentioned above.
+
+| Data Block | `head` | `name` | `payload` |
+| --- | --- | --- | --- |
+| Schema | `10100000` | `VarText` | No Schema |
+| Notes | Last 4 bits are ignored. | Name of the tag instance. | 1-byte long. |
+
+## Auxiliary Type Specifications
+
+### VarText Specifications
+
+`VarText` is an ASCII string data type that uses the MSB to encode continuation.
+
+`VarText` utilizes the last 7 bits for ASCII data storage and the most significant bit (MSB) to indicate whether this string is ending at this byte. When MSB=0, there is more data; when MSB=1, the string will end at this byte.
+
+The schema of MSB is inverted contrary to Protobuf because MSB=0 for most characters can retain their actual ASCII encoding and provide good readability in hex editors, and only one bit flip is needed to encode  `VarText` from a regular ASCII string.
+
+`VarText` can only encode basic ASCII characters except for one string, i.e. the string containing a single `NULL` (`10000000`, it's used to encode empty string `""`).
+
+Every implementation should always read `10000000` as `""` rather than `"\0"`.
+
+`NULL` in the end of C-style strings is discarded.
+
+### VarInt Specifications
+
+`VarInt` is a variable-length unsigned integer data type.
+
+`VarInt` is a little-endian encoding. It utilizes the last 7 bits of one byte for data and the MSB to indicate whether this integer is ending at this byte.
+
+When encoding an integer, divide the binary representation into 7-bit slices from the lowest bit, add 0 to the highest slice to make it 7 bits long, then reverse the order of slices and set the MSB accordingly: when MSB=0, there is more data; when MSB=1, the integer will end at this byte.
+
+The schema of MSB is inverted contrary to Protobuf to match the schema of `VarText`.
+
+One byte (`10000000`) is needed to encode `0`.
+
+When encoding signed integers, use Zigzag encoding to convert them into unsigned integers before the process.
+
+`VarInt` doesn't store information about the size of the stored integer. You will need to figure out the smallest safe integer type at runtime if you want to save memory space.

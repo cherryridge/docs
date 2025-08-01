@@ -1,0 +1,80 @@
+﻿---
+sidebar_position: 2
+---
+
+# Save the World
+
+> To save the world, we must know how to save the world.
+
+## Java or Bedrock?
+
+CherryGrove is trying to learn from Minecraft's good designs while avoiding its bad sides. When it comes to world data storage, Java and Bedrock are very different.
+
+### ACIDity
+
+CherryGrove is following Minecraft more rather than the rest of the industry because its uniqueness. But Java and Bedrock are very different for storing game data. Here is the OG ACID perspective:
+
+<table style={{textAlign: "center"}}>
+    <thead><tr>
+        <th></th>
+        <th>Java</th>
+        <th>Bedrock</th>
+    </tr></thead>
+    <tbody>
+        <tr>
+            <th>How</th>
+            <td>`level.dat`, `region`, `playerdata`, `DIM1`, `DIM-1`, `entities`, `*.dat`, `*.mca`, `*.*_old` etc with NBT</td>
+            <td>[Modified](https://github.com/Mojang/leveldb) [LevelDB](https://github.com/google/leveldb) with NBT</td>
+        </tr>
+        <tr>
+            <th>Basis</th>
+            <td>Filesystem</td>
+            <td>LevelDB (KV storage ("database"))</td>
+        </tr>
+        <tr>
+            <th>Atomicity</th>
+            <td>⭐</td>
+            <td>⭐⭐⭐⭐</td>
+        </tr>
+        <tr>
+            <th>Consistency</th>
+            <td>⭐⭐</td>
+            <td>⭐⭐⭐</td>
+        </tr>
+        <tr>
+            <th>Isolation</th>
+            <td>⭐</td>
+            <td>⭐⭐</td>
+        </tr>
+        <tr>
+        <th>Durability</th>
+            <td>⭐⭐⭐</td>
+            <td>⭐⭐⭐⭐</td>
+        </tr>
+    </tbody>
+</table>
+
+Java being so bad on atomicity is because it's filesystem-based and it separates a lot of data into different files. The notorious "crash dupe" is a result of world (chunk) data being fundamentally separated with player data. So, it's a very natual way for CherryGrove to store data in a database instead of trying to mimic the filesystem to at least gain some atomicity.
+
+There is no real schema for both Java and Bedrock and this is a shame because their features are literally builtin. Just think about how many illegal block states/illegal data you can have in Java. So we've set a ambitious goal to implement a schema system for CherryGrove, for arbitrary packs, for arbitrary data, to get rid of illegal states as much as possible. This is really hard and we plan to release it probably in 2.0.
+
+For isolation, it's a very hard problem to solve in a sandbox game where everything is linked and we need to chunk the world so that we don't flood the storage or blow up the RAM, and we often don't need it anyway because we can ensure that by single writer in single-player mode.
+
+The last bit is durability. CherryGrove can't do much on top of RocksDB itself.
+
+So Java or Bedrock? Neither, but since Bedrock is better, we can use it as the reference. By the way, for some time I was wondering in Bedrock's LevelDB storages of my worlds and I found a lot of keys with ASCII characters and I thought that maybe LevelDB requires ASCII keys. But it turns out that LevelDB don't care about anything. It's just mapping bytes to bytes.
+
+### Enough Yapping
+
+1. ~~Mojang's fork is mainly for adding compressions and Windows compatibility,~~ THEY ARE LITERALLY ONLY 5 COMMITS BEHIND GOOGLE NOW ON 2025.7.25 SO WTF? So we use [RocksDB](https://rocksdb.org/), a "fork" of LevelDB by Meta.
+2. Like Minecraft, CherryGrove uses chunk-based system, and *of course* it's a cubic chunk system with 16×16×16 blocks in volume.
+3. And also like Minecraft, CherryGrove is going to be *BASE-ically* ACID. It's not a database for storing financial data.
+4. We recommend treating y coordinates as IRL altitude relative to sea level.
+
+## World Partitioning
+
+As we all know we need to simulate the world in a non-explosive way and store it. There are two ways to look at this problem: Locality, which means the cubic chunk system; and category, which means what kind of data we are processing together.
+
+Note that there is not as many categories in CherryGrove as in Minecraft because we can't make assumptions beyond the basic elements like blocks and entities. Java has tile entities, Bedrock has block entities, but CherryGrove has no such thing.
+
+So we got another way: ECS, or Entity-Component-System. In fact Bedrock is already using this approach. It basically means that we have entities ("things") and components ("data") and we have multiple data "in" a thing, that we have some "ways" to process it. Every"thing" in CherryGrove is a component, including `BlockRenderComp`, with which you can render it as a block, and `CoordinatesComp`, with which you can have it in the world with non-integer coordinates (integer: `BlockCoordinatesComp`). Now that you know these genesis-level components, take a look at a higher-level `HostileEntityComp`, with which it will use the GPU (if available) to run the pathfinding algorithm to find the player and decrease their `HealthComp::health` by `HostileEntityComp::baseDamage` when 

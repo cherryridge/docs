@@ -1,0 +1,80 @@
+﻿---
+title: "Overview"
+---
+
+# CherryGrove
+
+CherryGrove is a block game framework (or engine, if you like). It comes with little built-in gameplay functionalities but a ton of modding features, making it highly customizable and suitable for meta creating your own block game where your can create your dream work.
+
+CherryGrove is designed to be cross-platform. It is written in modern C++ and uses modern STL/libraries.
+ 
+CherryGrove is designed to be free and open source software **but with commercial use restrictions in mind**. More of it comes in the [Legal](../legal) page. TL;DR (not legally binding): If you don't sell anything, you're good to go.
+
+## Supported Platforms
+
+<details>
+    <summary>**Atlas**</summary>
+    - ☑️: Fully supported.
+    - ✅: Theoretically supported (functionality not verified).
+    - 🚧: Working in progress.
+    - 🚩: Planned to support.
+    - 🚫: No plan to support/not applicable.
+</details>
+
+<table style={{textAlign: "center"}}>
+    <thead><tr>
+        <th></th>
+        <th>Windows</th>
+        <th>Linux</th>
+        <th>MacOS</th>
+        <th>Android</th>
+        <th>iOS</th>
+        <th>iPadOS</th>
+        <th>Web (Emscripten)</th>
+    </tr></thead>
+    <tbody>
+        <tr>
+            <th>x86^</th>
+            <td>🚫</td>
+            <td>🚫</td>
+            <td>🚫</td>
+            <td>🚫</td>
+            <td>🚫</td>
+            <td>🚫</td>
+            <td rowSpan={4}>🚫*</td>
+        </tr>
+        <tr>
+            <th>x64</th>
+            <td>☑️</td>
+            <td>☑️</td>
+            <td>☑️</td>
+            <td>🚩</td>
+            <td>🚫</td>
+            <td>🚫</td>
+        </tr>
+        <tr>
+            <th>arm32^</th>
+            <td>🚫</td>
+            <td>🚫</td>
+            <td>🚫</td>
+            <td>🚫</td>
+            <td>🚫</td>
+            <td>🚫</td>
+        </tr>
+        <tr>
+            <th>arm64</th>
+            <td>✅</td>
+            <td>✅</td>
+            <td>✅</td>
+            <td>🚩</td>
+            <td>🚩^^</td>
+            <td>🚩^^</td>
+        </tr>
+    </tbody>
+</table>
+
+\*: V8 currently can't run on WASM platform. If so, it will be able to effectively run on itself, which is awesome but not now.
+
+^: We have dropped x86 and arm32 because it's just outdated and not worth the limited resource. Theoretically it's able to compile and run, but some misterious and unexplainable bugs may occur.
+
+^^: We need more investment for the project to bring it to App Store.

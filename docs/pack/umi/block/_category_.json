@@ -1,0 +1,8 @@
+{
+    "label": "Block",
+    "position": 101,
+    "link": {
+        "type": "doc",
+        "id": "pack/umi/block/index"
+    }
+}

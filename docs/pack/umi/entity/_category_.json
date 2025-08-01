@@ -1,0 +1,8 @@
+{
+    "label": "Entity",
+    "position": 102,
+    "link": {
+        "type": "doc",
+        "id": "pack/umi/entity/index"
+    }
+}
