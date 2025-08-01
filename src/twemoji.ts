@@ -9,8 +9,6 @@ function runTwemoji(){
     });
 }
 
-export function onRouteDidUpdate(){
-    runTwemoji();
-}
-
-if(typeof window !== "undefined") runTwemoji();
+export default {onRouteDidUpdate({ location, previousLocation }){
+    if (!previousLocation || location.pathname !== previousLocation.pathname) runTwemoji();
+}};

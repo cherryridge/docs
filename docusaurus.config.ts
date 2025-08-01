@@ -10,8 +10,6 @@ const config :Config = {
     url: "https://docs.cherrygrove.dev",
     baseUrl: "/",
 
-    organizationName: "cherryridge",
-    projectName: "docs",
     trailingSlash: false,
 
     onBrokenLinks: "throw",
