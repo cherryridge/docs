@@ -1,0 +1,62 @@
+﻿---
+sidebar_position: 2
+---
+
+# CGR Files
+
+A CGR (compressed CherryGrove relocatable game save) file is a compressed folder that contains one or more serialized relocatble world data files in the format of CGNBT in `.cgb` files, and a `manifest.json` file that contains metadata about the structures.
+
+The common use cases are:
+
+1. To place structures in structure generation requests in content packs, to avoid setting blocks repeatedly and manually.
+2. To share structures with other players, similar to `.mcstructure` files in Minecraft.
+
+## `manifest.json`
+
+Example of `manifest.json`:
+
+```json
+{
+    "formatVersion": 1,
+    "cgr": {
+        "namespace": "cg_town", //Optional if used in content packs
+        "name": "Town Square", //Optional
+        "description": "Sturcture pieces for town square.", //Optional
+        "structures": [
+            {
+                "identifier": "square_center_fountain",
+                "file": "center_fountain.cgb", //Optional if filename is the same as identifier
+            },
+            {
+                "identifier": "square_center_tree",
+                "file": "center_tree.cgb"
+            },
+            {
+                "identifier": "square_center_palette",
+                "file": "center_palette.cgb"
+            },
+            {
+                "identifier": "square_flooring_bricks",
+                "file": "flooring_bricks.cgb"
+            },
+            {
+                "identifier": "square_flooring_dirt",
+                "file": "flooring_dirt.cgb"
+            }
+        ]
+    }
+}
+```
+
+Access structure objects in code using identifier `cg_town:square_center_fountain` if namespace is specified, otherwise `square_center_fountain`.
+
+## Folder Structure
+
+Flat structure and subfolders are supported.
+
+```
+├───📁 a
+│   └───📄 b.cgb //Access using `a/b.cgb`
+├───📄 <...>.cgb
+└───📄 manifest.json
+```

@@ -83,7 +83,7 @@ const config :Config = {
                         },
                         {
                             label: "Help Us Translate!",
-                            to: "cg/contributing#translate-documentation"
+                            to: "cg/contributing#translating-documentation"
                         }
                     ]
                 },
@@ -105,8 +105,20 @@ const config :Config = {
                             to: "cg/overview"
                         },
                         {
+                            label: "Roadmap",
+                            to: "cg/roadmap"
+                        },
+                        {
+                            label: "Releasing",
+                            to: "cg/releasing"
+                        },
+                        {
                             label: "Design",
                             to: "cg/design"
+                        },
+                        {
+                            label: "References",
+                            to: "cg/references"
                         },
                         {
                             label: "Contributing",
@@ -126,7 +138,7 @@ const config :Config = {
                             to: "pack/overview"
                         },
                         {
-                            label: "Tutorial",
+                            label: "Getting Started",
                             to: "pack/getting-started"
                         },
                         {
@@ -147,21 +159,25 @@ const config :Config = {
                             to: "vanilla/overview",
                         },
                         {
+                            label: "Game Design",
+                            to: "vanilla/design"
+                        },
+                        {
+                            label: "Contributing",
+                            to: "vanilla/contributing"
+                        },
+                        {
                             label: "Tutorial",
                             to: "vanilla/tutorial",
                         },
                         {
                             label: "Wiki",
                             to: "vanilla/wiki"
-                        },
-                        {
-                            label: "Contributing",
-                            to: "vanilla/contributing"
                         }
                     ]
                 },
                 {
-                    title: "Links & Contact",
+                    title: "Accounts & Contact",
                     items: [
                         {
                             label: "GitHub",
@@ -180,12 +196,20 @@ const config :Config = {
                             href: "https://t.me/cherrygrove_dev"
                         },
                         {
+                            label: "Youtube",
+                            href: "https://youtube.com/@cherrygrove_dev"
+                        },
+                        {
                             label: "BlueSky",
                             href: "https://bsky.app/profile/cherrygrove.dev"
                         },
                         {
+                            label: "Twitch",
+                            href: "https://twitch.tv/cherryridgehq"
+                        },
+                        {
                             label: "X",
-                            href: "https://x.com/CherryRidgeHQ"
+                            href: "https://x.com/cherrygrove_dev"
                         }
                     ]
                 }

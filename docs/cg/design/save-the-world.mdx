@@ -8,10 +8,6 @@ sidebar_position: 2
 
 ## Java or Bedrock?
 
-CherryGrove is trying to learn from Minecraft's good designs while avoiding its bad sides. When it comes to world data storage, Java and Bedrock are very different.
-
-### ACIDity
-
 CherryGrove is following Minecraft more rather than the rest of the industry because its uniqueness. But Java and Bedrock are very different for storing game data. Here is the OG ACID perspective:
 
 <table style={{textAlign: "center"}}>
@@ -62,19 +58,148 @@ For isolation, it's a very hard problem to solve in a sandbox game where everyth
 
 The last bit is durability. CherryGrove can't do much on top of RocksDB itself.
 
-So Java or Bedrock? Neither, but since Bedrock is better, we can use it as the reference. By the way, for some time I was wondering in Bedrock's LevelDB storages of my worlds and I found a lot of keys with ASCII characters and I thought that maybe LevelDB requires ASCII keys. But it turns out that LevelDB don't care about anything. It's just mapping bytes to bytes.
-
 ### Enough Yapping
 
-1. ~~Mojang's fork is mainly for adding compressions and Windows compatibility,~~ THEY ARE LITERALLY ONLY 5 COMMITS BEHIND GOOGLE NOW ON 2025.7.25 SO WTF? So we use [RocksDB](https://rocksdb.org/), a "fork" of LevelDB by Meta.
+So Java or Bedrock? Neither, but since Bedrock is better, we can use it as the reference.
+
+By the way, for some time I was wondering in Bedrock's LevelDB storages of my worlds and I found a lot of keys with ASCII characters and I thought that maybe LevelDB requires ASCII keys. But it turns out that LevelDB don't care about anything. It's just mapping bytes to bytes.
+
+The general ideas are:
+
+1. ~~Mojang's fork is mainly for adding compressions and Windows compatibility,~~ THEY ARE LITERALLY ONLY 5 COMMITS BEHIND GOOGLE NOW ON 2025.7.25 SO WTF? So we use [RocksDB](https://rocksdb.org), a "fork" of LevelDB by Meta.
 2. Like Minecraft, CherryGrove uses chunk-based system, and *of course* it's a cubic chunk system with 16×16×16 blocks in volume.
 3. And also like Minecraft, CherryGrove is going to be *BASE-ically* ACID. It's not a database for storing financial data.
 4. We recommend treating y coordinates as IRL altitude relative to sea level.
 
-## World Partitioning
+## World Partition
 
-As we all know we need to simulate the world in a non-explosive way and store it. There are two ways to look at this problem: Locality, which means the cubic chunk system; and category, which means what kind of data we are processing together.
+As we all know we need to simulate the world in a non-explosive way and store it. There are two ways to look at this problem: Locality, which means the cubic chunk system; and category, which means what kind of data we are processing and storing together. It all comes down to storing chunks and storing things in chunks.
 
-Note that there is not as many categories in CherryGrove as in Minecraft because we can't make assumptions beyond the basic elements like blocks and entities. Java has tile entities, Bedrock has block entities, but CherryGrove has no such thing.
+### Chunks
 
-So we got another way: ECS, or Entity-Component-System. In fact Bedrock is already using this approach. It basically means that we have entities ("things") and components ("data") and we have multiple data "in" a thing, that we have some "ways" to process it. Every"thing" in CherryGrove is a component, including `BlockRenderComp`, with which you can render it as a block, and `CoordinatesComp`, with which you can have it in the world with non-integer coordinates (integer: `BlockCoordinatesComp`). Now that you know these genesis-level components, take a look at a higher-level `HostileEntityComp`, with which it will use the GPU (if available) to run the pathfinding algorithm to find the player and decrease their `HealthComp::health` by `HostileEntityComp::baseDamage` when 
+The simplest way to partition a 3D world is to use ***chunks***, which is a cluster of blocks separated by a fixed grid with a fixed size. In CherryGrove, a chunk is a 16×16×16 block volume.
+
+The goal of CherryGrove is to provide normal performance for normal worlds, and at least "scalable" performance for upper-limit worlds. The world coordinate bound is i64, i.e. 9,223,372,036,854,775,807 blocks in each direction, and it's definitely a good news for the new 2B2T, but normal players will probably never even reach 100,000 blocks out. The possible range is simply too large.
+
+So, we need to scale dynamically, instead of putting a fixed amount of data into a RocksDB key.
+
+The main issue coming with scaling chunks is we need to find the chunk through an octree in one big chunk cluster if we need to access it, so natually we want to store currently loaded, hot chunks in a smaller scale, with one chunk per key.
+
+However, in order to preserve the flexibility of CherryGrove, we 1) can't assume (0, 0, 0) is loaded more frequently; 2) can't assume small coordinates are loaded more frequently than large coordinates; 3) can't assume horizontal neighboring spaces are loaded more frequently than vertical neighboring spaces.
+
+The only viable method to determine frequency is to observe player activity by recording the (game) time of the last access to a chunk and "predicting" player activity based on their coordinates. The colder the chunks get, the larger the scale is, eventually reaching the maximum scale of 16×16×16 chunks per RocksDB key.
+
+The full scale level table is shown below. The reasoning for it is too complicated and I don't want to explain yet. The prediction method should be simple, like:
+
+1. A chunk with player loading it (in simulation distance) is immediately promoted to `L0`.
+2. A chunk is demoted to `L1` if it has not been loaded for `x` minutes.
+3. A chunk is demoted to `L2` if it has not been loaded for `y` minutes, or it's `z` blocks from the nearest player in the latest player coordinates check.
+
+<table style={{textAlign: "center"}}>
+    <thead><tr>
+        <th>Scaling Level</th>
+        <th>L0</th>
+        <th>L1</th>
+        <th>L2</th>
+    </tr></thead>
+    <tbody>
+        <tr>
+            <th>Nick Name</th>
+            <td>`hotChunk`</td>
+            <td>`warmCluster`</td>
+            <td>`coldCluster`</td>
+        </tr>
+        <tr>
+            <th>Column Family Name</th>
+            <td>`chunkl0`</td>
+            <td>`chunkl1`</td>
+            <td>`chunkl2`</td>
+        </tr>
+        <tr>
+            <th>Side Length (Block)</th>
+            <td>16</td>
+            <td>64</td>
+            <td>256</td>
+        </tr>
+        <tr>
+            <th>Side Length (Chunk)</th>
+            <td>1</td>
+            <td>4</td>
+            <td>16</td>
+        </tr>
+        <tr>
+            <th>Scale Factor</th>
+            <td>1</td>
+            <td>4</td>
+            <td>16</td>
+        </tr>
+    </tbody>
+</table>
+
+However, even with this design we still can't satisfy RocksDB. Now the problem is key size instead of key count. RocksDB is not designed to store large data, and when it comes to "large data", I mean something more than **1MB**. Even non-malicious players can easily reach this threshold and significantly slow down chunk loading by building a library or a server public storage. Unfortunately this is not easily solvable. We can mitigate the problem by using BlobDB in chunk cloumn families for now.
+
+### Inside Chunks
+
+This section assumes that you know the idea of ECS (Entity-Component-System). 
+
+The hardest problem for storing chunks is every data is arbitrary. CherryGrove needs to be very general to support every form of data. Specifically, 1) data size can be fixed or variable, so we can't just make a "table" for every block in a chunk; 2) not every block has the same data structure, so we can't just make a "table" for every component in a chunk.
+
+So how about Minecraft? Minecraft uses NBT to store effectively everything, and NBT is essentially JSON, which is essentially contiguous data with separators. However, NBT is not a good choice for sotring in databases. You need to read a huge chunk of raw binary data every time you want to access something. Instead we designed an index system based on the fact that a type of block always has the same component
+
+However complete random access is hard and not necessary. We can make only the big part—component data random accessed. And we will not introduce air for components not used by a block for the sake of alignment. We use another approach.
+
+But first let's talk about headers and how we store block ids, that's the first thing we need to do. The general idea is to store block ids and block component schemas inside the world and compare with mod-side data every time when the world loads. This is meant to:
+
+1. Provide an update mechanism for schemas if mods commit different data on world load.
+2. Stop mods from reading beyond boundary from a component by making it larger the second time the world loads.
+
+The (global) block numerical id is simply the order of the registration of each block starting from 0. It's stored globally as a list in one key. Registered blocks' numerical ids will not change in this world under any circumstances. Many other aspects follow the same pattern when it comes to storing, like components, entities and structures. About the details, see [Storage](../references/world-storage).
+
+For local storage (inside one chunk), we have a chunk header to store offset to each section. The header's structure is as follows:
+
+```cpp
+struct ChunkHeader {
+    u64 formatVersion; //Version of the chunk format, used for future compatibility
+    u64 componentOffset; //Offset of components section from the very start
+    u64 entityOffset; //Offset of entities section from the very start
+    u64 layeredBlockCount; //Count of blocks that aren't in layer 0, used to calculate additional block palette size
+    u64 blockPaletteCount; //Number of kinds of blocks in this chunk
+    array<u64> blockPalette; //`blockPaletteCount` global block ids, each one's index is local block id
+};
+```
+
+We can calculate local bits per block id by `ceil(log2(blockPaletteCount))`. Then come the local block id palette, which is a bit-packed list of local block ids. The total byte length is `ceil(4096 * bitsPerBlockId / 8)`. The order of blocks is x-y-z. There's no need for Morton code.
+
+Additionally for generalizing `waterlogged` in Java and mysterious block layer system in Bedrock, we use a incremental approach for the layer system, based on the assumption that 1) most cells have only one layer; 2) most multi-layer cells have not many layers. The layer 0 is stored as above, while every layer of every cell after that is stored individually after the local block id palette. The size is 12-bits for x-y-z local coordinates and `bitsPerBlockId` bits for the block id. Layer order is determined by the order in which the same coordinates encountered in the data. The earlier the coordinates, the lower the layer is, starting from 1.
+
+Then come the component data. For fixed-size components, we simply store the u64 component ID and a contiguous array of data. For variable-size components, we store the u64 component ID, a u8 offset size by bytes, and a contiguous array of offsets with n+1 elements, from 0 to the size of the component data. Finally we store the component data itself. This structure enables us to random access the component data and skip the component section without any separators needed.
+
+Also, for layer compliance, treat block layer as the "fourth dimension" and the lowest priority among the four dimensions when calculating component offset. For example: (0, 0, 0) layer 0, (0, 0, 0) layer 1, (0, 0, 1) layer 0, ..., (0, 0, 15) layer 0, (0, 1, 0) layer 0, (0, 1, 0) layer 1... and so on.
+
+:::note
+By convention, component ID MSB=0 is fixed-size component, and MSB=1 is variable-size component.
+:::
+
+Finally, there is the entities section. Entities' positions are not fixed to the grid, and they can move freely across chunks, sometimes in a very short time. We need to store the references in chunks instead of the entities themselves. Every entity is identified using UUID. They are stored in their separate column family using the UUID as the key. The entity section of the chunk starts with a u64 entity count, followed by a contiguous array of UUIDs.
+
+### Scaling Chunks
+
+We need to be able to store chunk clusters into one key, but luckily we can promote the whole cluster when needed, instead of accessing them individually. There is basically no need for storing chunks in a structured way. For now, we just store them in a contiguous array with a small header like this:
+
+```cpp
+struct ChunkClusterHeader {
+    u64 formatVersion; //Version of the chunk cluster format, used for future compatibility
+    u8 scaleLevel; //1 for L1, 2 for L2
+    array<u64> chunkOffsets; //(4 ** `scaleLevel`) ** 3 offsets of chunks in the cluster starting from the very start
+};
+```
+
+## Cache Data
+
+Surprisingly, we want to store some "redundant" data in the world storage instead of building them using necessary data. This is because we want to reduce the amount of calculation needed to load an existing chunk.
+
+### Opacity Map
+
+The opacity map is a 2D map of the world that stores the opacity of each column in the world. It is used to quickly determine which section of a column is opaque and which section is transparent. This is useful for rendering and visibility calculations.
+
+The opacity map is stored in a separate column family with default L1 scaling level, i.e. 64×64 entries per key.

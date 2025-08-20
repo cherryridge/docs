@@ -1,0 +1,11 @@
+﻿---
+sidebar_position: 8
+---
+
+# Light
+
+Lighting is the most tricky problem in modern games because it's very computationally expensive to achieve even nearly realistic lighting. In a sandbox game where every lighting argument (light sources, obstacles) is arbitrary, we lose the ability to bake the lighting in, and the problem is worse than ever.
+
+Minecraft uses a very simple lighting model: Discrete light levels, and BFS-flood fill to calculate the light levels, then interpolate the light levels to get the final, smooth lighting.
+
+TODO: lighting!

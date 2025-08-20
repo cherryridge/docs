@@ -19,22 +19,22 @@
 
 .main{
     display: flex;
-    flex-flow: column nowrap;
-    align-items: center;
-    margin: 3rem 2rem;
+    flex-flow: row nowrap;
+    justify-content: center;
 }
 
 .featureContainer{
     display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(min(100%, 300px), 1fr));
-    max-width: 1200px;
-    min-width: 0px;
-    gap: 2rem;
-    margin-bottom: 2rem;
+    grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+    max-width: 1500px;
+    margin: 3rem;
 }
 
 @media screen and (max-width: 996px){
     .banner{
         padding: 2rem;
+    }
+    .main{
+        margin: 3rem 1rem;
     }
 }

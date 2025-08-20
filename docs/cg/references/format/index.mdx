@@ -8,21 +8,23 @@ Currently CherryGrove uses the file formats below:
 
 ### `.txt`
 
-CherryGrove uses it for simple configuration data storage.
+CherryGrove uses it to store simple configuration data.
 
 ### `.json`
 
-CherryGrove uses it to store configurations and content packs uses it to mod the game directly or to store data.
+CherryGrove uses it to store configurations.
+
+Used by content packs for JSON API or data storage.
 
 Also, `manifest.json` is used to identify whatever folders of interest, such as content packs or relocatable world saves.
 
 ### `.js`
 
-Content pack code files.
+Content pack code for JavaScript API.
 
 ### `.lua`
 
-Content pack code files.
+Content pack code for Lua API.
 
 ## Binary File Formats
 
@@ -32,7 +34,7 @@ General [CGNBT (CherryGrove Named Binary Tag)](format/cgnbt) files.
 
 ### `.wasm`
 
-Content pack code files.
+Content pack code for WebAssembly API.
 
 ## Binary File Formats (Compressed)
 
@@ -42,11 +44,11 @@ Compressed CherryGrove world folder, similar to `.mcworld`.
 
 ### `.cgp`
 
-Compressed CherryGrove content pack folder, similar to `.mcaddon`/`.mcpack`.
+Compressed CherryGrove content pack folder, similar to `.mcaddon` / `.mcpack`.
 
-### `.cgr`
+### [`.cgr`](format/cgr)
 
-CherryGrove relocatable game save, similar to schematic or `.mcstructure`, but is a compressed folder with `manifest.json` that indexes potentially multiple `.cgb` stored structures.
+Compresse CherryGrove relocatable game save, similar to schematic or `.mcstructure` but with `manifest.json` that indexes potentially multiple structures stored using `.cgb` files.
 
 ### `.zip`
 

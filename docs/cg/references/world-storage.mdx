@@ -1,0 +1,197 @@
+﻿---
+sidebar_position: 1
+---
+
+# World Storage
+
+## `world.cgb`
+
+```
+formatVersion :UVarInt
+engineVersion :UVarInt
+name :string
+lastModified :UVarInt //UNIX timestamp
+thumbnail :Array(Raw) //Raw bytes of a PNG image
+```
+
+## RocksDB
+
+<table style={{textAlign: "center"}}>
+    <thead><tr>
+        <th>Column Family Name</th>
+        <th>Usage</th>
+        <th>Key Schema</th>
+    </tr></thead>
+    <tbody>
+        <tr>
+            <td>`worldMeta`</td>
+            <td>Global intrinsic world properties</td>
+            <td>`<property_name>`</td>
+        </tr>
+        <tr>
+            <td>`worldProperties`</td>
+            <td>Global custom world properties</td>
+            <td>`<namespace:property_name>`</td>
+        </tr>
+        <tr>
+            <td>`chunkl0`</td>
+            <td>L0 chunk data</td>
+            <td>`<dimensionID:64><worldCoordsMortonXYZ:192>`</td>
+        </tr>
+        <tr>
+            <td>`chunkl1`</td>
+            <td>L1 chunk data</td>
+            <td>`<dimensionID:64><l1CoordsMortonXYZ:192>`</td>
+        </tr>
+        <tr>
+            <td>`chunkl2`</td>
+            <td>L2 chunk data</td>
+            <td>`<dimensionID:64><l2CoordsMortonXYZ:192>`</td>
+        </tr>
+        <tr>
+            <td>`entity`</td>
+            <td>Entity data</td>
+            <td>`<entityUUID:128>`</td>
+        </tr>
+        <tr>
+            <td>`opacityMap`</td>
+            <td>Cached 2D opacity map data</td>
+            <td>`<dimensionID:64><l2CoordsMortonXZ:128>`</td>
+        </tr>
+    </tbody>
+</table>
+
+### `worldMeta`
+
+<table style={{textAlign: "center"}}>
+    <thead><tr>
+        <th>Key</th>
+        <th>Type</th>
+        <th>Description</th>
+    </tr></thead>
+    <tbody>
+        <tr>
+            <td>`seed`</td>
+            <td>`u64`</td>
+            <td>World seed.</td>
+        </tr>
+        <tr>
+            <td>`key`</td>
+            <td>`boost::uuids::uuid`</td>
+            <td>World randomizer / hash salt.</td>
+        </tr>
+        <tr>
+            <td>`time`</td>
+            <td>`u64`</td>
+            <td>World time. See [Simulation](../design/simulation).</td>
+        </tr>
+        <tr>
+            <td>`packs`</td>
+            <td>`array<boost::uuids::uuid>`</td>
+            <td>Pack UUID list.</td>
+        </tr>
+        <tr>
+            <td>`blocks`</td>
+            <td>`varcharArray`</td>
+            <td>Block numerical id mapping.</td>
+        </tr>
+        <tr>
+            <td>`components`</td>
+            <td>`varcharArray`</td>
+            <td>Component numerical id mapping.</td>
+        </tr>
+        <tr>
+            <td>`entities`</td>
+            <td>`varcharArray`</td>
+            <td>Entity numerical id mapping.</td>
+        </tr>
+        <tr>
+            <td>`structures`</td>
+            <td>`varcharArray`</td>
+            <td>Structure numerical id mapping.</td>
+        </tr>
+    </tbody>
+</table>
+
+---
+---
+---
+---
+---
+---
+
+```cpp
+enum struct GlobalTypes : u8 {
+    WorldProperty = 0, Locality, LocalityRanged, Entity, OpacityMap
+};
+```
+
+### `World`
+
+```
+<globalTypeEnum:0x00><propertyHash:64> :unknown
+```
+
+#### Intrinsic Properties
+
+### `Locality`
+
+#### localityDataTypeEnum
+
+```cpp
+enum struct LocalityDataTypes : u8 {
+    Locality = 0, Block, EntityReference, Light
+};
+```
+
+#### `Locality.Locality`
+
+```
+<globalTypeEnum:0x01><chunkX:64><chunkY:64><chunkZ:64><localityDataTypeEnum:0x01><localX:8><localY:8><localZ:8><layer:16><componentHash:64> :unknown
+```
+
+#### `Locality.Block`
+
+```
+<globalTypeEnum:0x01><chunkX:64><chunkY:64><chunkZ:64><localityDataTypeEnum:0x01><localX:8><localY:8><localZ:8><layer:16><componentHash:64> :unknown
+```
+
+#### `Locality.EntityReference`
+
+Single key.
+
+```
+<globalTypeEnum:0x01><chunkX:64><chunkY:64><chunkZ:64><localityDataTypeEnum:0x02> :array<boost::uuids::uuid>
+```
+
+#### `Locality.Light`
+
+Light level cache.
+
+```
+<globalTypeEnum:0x01><chunkX:64><chunkY:64><chunkZ:64><localityDataTypeEnum:0x03><localX:8><localY:8><localZ:8> :array<u8, 3>
+```
+
+### `LocalityRanged`
+
+Arbitrary ranged locality data. All coordinates are world coordinates.
+
+```
+<globalTypeEnum:0x02><startX:64><startY:64><startZ:64><endX:64><endY:64><endZ:64><componentHash:64> :unknown
+```
+
+### `Entity`
+
+Entity components.
+
+```
+<globalTypeEnum:0x03><entityID:128><componentHash:64> :unknown
+```
+
+### `OpacityMap`
+
+2D opacity map cache.
+
+```
+<globalTypeEnum:0x04><chunkX:64><chunkZ:64><localX:8><localZ:8> :array<i64>
+```
