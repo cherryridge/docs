@@ -184,7 +184,9 @@ If the `Array` contains `Bool` or `Hexadecimal` type, every tags in `entries` ma
 
 If the `Array` contains `Array` type, every tags in `entries` may contain `head` and `payload` data block. The **Type Identifier** (`1001`) is ignored. The **Second Type** and the `payload` data block is parsed according to [`Array` type](#array-type).
 
-If the Array contains `Object`, `IVarInt`, `UVarInt`, `Float`, `Double`, `String`, or `Raw` type, every tags in `entries` may contain only `payload` data block and is parsed according to their respective specifications.
+If the `Array` contains `Object` type, every tags in `entries` may contain only `payload` data block, and each object is ended with an additional `ObjectEnd` tag, including the last one.
+
+If the Array contains `IVarInt`, `UVarInt`, `Float`, `Double`, `String`, or `Raw` type, every tags in `entries` may contain only `payload` data block and is parsed according to their respective specifications.
 
 ### `String` type
 
