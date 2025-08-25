@@ -182,7 +182,7 @@ Contrary to composite type, the data in `entries` is solely consisted of **Embed
 
 If the `Array` contains `Bool` or `Hexadecimal` type, every tags in `entries` may contain only `head` data block. The **Type Identifier** is ignored. The **Convenient Payload** is the value of each entry.
 
-If the `Array` contains `Array` type, every tags in `entries` may contain `head` and `payload` data block. The **Type Identifier** (`1001`) is ignored. The **Second Type** and the `payload` data block is parsed according to [`Array` type](#array-type).
+If the `Array` contains `Array` type, every tags in `entries` may contain `head` and `payload` data block. The **Type Identifier** (`1000`) is ignored. The **Second Type** and the `payload` data block is parsed according to [`Array` type](#array-type).
 
 If the `Array` contains `Object` type, every tags in `entries` may contain only `payload` data block, and each object is ended with an additional `ObjectEnd` tag, including the last one.
 
