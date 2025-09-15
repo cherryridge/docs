@@ -9,7 +9,7 @@ Content packs are "mods" for CherryGrove. It's not officially called "mods"("mod
 Content packs can be declarative or scripting-based, or both. It uses JSON for declarative work, and the following programming languages/scripting interfaces are supported:
 
 - JavaScript, via [V8](https://v8.dev), Google's JavaScript engine for Chromium.
-- WebAssembly, via [Wasmer](https://wasmer.io), which can be compiled from many languages like C, C++, and Rust. It's the preferred and most efficient way to create a serious pack.
+- WebAssembly, via [Wasmtime](https://wasmtime.dev), which can be compiled from many languages like C, C++, and Rust. It's the preferred and most efficient way to create a serious pack.
 - Lua, via [LuaJIT](https://luajit.org). Lua is widely embedded in games to provide interfaces for modding.
 
 In order to support different modding languages, CherryGrove implemented a layer of interface called Unified Modding Interface (UMI), which provides all possible functions and objects. JSON, JS, WASM and Lua are treated as four respective frontends with different capabilities.
@@ -20,7 +20,7 @@ In theory someone can implement a new frontend for UMI fairly easily.
 block-beta
     columns 4
     A["JSON API"] B["JS API"] C["WASM API"] D["Lua API"]
-    nlohmann_json V8 Wasmer LuaJIT
+    nlohmann_json V8 Wasmtime LuaJIT
     E["Unified Modding Interface"]:4
     F["Lower Level Systems"]:4
 ```
