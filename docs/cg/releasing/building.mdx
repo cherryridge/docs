@@ -380,38 +380,6 @@ For Linux, there are some additional dependencies you also need to install. In U
 sudo apt install pkg-config libx11-dev libwayland-dev wayland-protocols libxkbcommon-dev libxkbcommon-x11-dev libxrandr-dev libxinerama-dev libgl1-mesa-dev x11proto-core-dev libxcursor-dev libxi-dev libgl-dev libasound2-dev libjack-jackd2-dev liblz4-dev libzstd-dev
 ```
 
-<Tabs groupId="os">
-    <TabItem value="windows" label="Windows">
-        If you are using CLion, enable `windows-<architecture>-<mode>` profiles in Open Project Wizard, and press OK. Wait for CLion to generate build system files.
-
-        If you are using Microsoft Visual Studio, open it up and choose Open a local folder, then select `cherrygrove`, or in blank window (continue without code) choose File > Open > Folder... / CMake..., then select `cherrygrove` or `cherrygrove\CMakeLists.txt`.
-
-        Wait for it to generate a solution. Switch to `windows-<architecture>-<mode>` configurations if needed.
-    </TabItem>
-    <TabItem value="linux" label="Linux">
-        Generate build system files (which is `gmake` in most cases) from CMake using these commands, notice that `gmake` is a single-configuration build system, so specify build mode:
-
-        ```bash
-        cd cherrygrove
-        mkdir out
-        cd out
-        cmake -DCMAKE_BUILD_TYPE=<Debug|Release> ..
-        ```
-    </TabItem>
-    <TabItem value="macos" label="MacOS">
-        If you are using CLion, 
-
-        If not, generate XCode build system files from CMake using these commands: (Yep XCode doesn't come with Ninja)
-
-        ```bash
-        cd cherrygrove
-        mkdir out
-        cd out
-        cmake ..
-        ```
-    </TabItem>
-</Tabs>
-
 ## Build
 
 You can deduce your build system by the software you're using, or by the build system files generated inside of `out` directory. If you're using an IDE, it may put subfolders of `<os>-<architecture>-<mode>` inside `out` directory instead of putting everything directly in `out`, and so does the commands and the products.
@@ -455,7 +423,7 @@ You can deduce your build system by the software you're using, or by the build s
         cd cherrygrove
         mkdir out
         cd out
-        cmake -G Ninja -DCMAKE_BUILD_TYPE=<Debug|Release> ..
+        cmake ..
         ```
 
         Run this command in `out` directory to build:
