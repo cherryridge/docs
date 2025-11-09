@@ -5,7 +5,6 @@ export default {
     { type: "html", value: "<div style='text-align:center;color:var(--ifm-menu-color);font-size:.9rem'>CherryGrove</div>" },
         "cg/overview",
         "cg/roadmap",
-        "cg/developing",
         {
             type: "category",
             label: "Releasing",
@@ -59,6 +58,8 @@ export default {
             }]
         },
         "pack/toolchain",
+        "pack/manifest",
+        "pack/events",
         {
             type: "category",
             label: "References",

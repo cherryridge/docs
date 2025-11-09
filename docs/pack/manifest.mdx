@@ -1,0 +1,88 @@
+﻿# Manifest
+
+The core of content pack is the `manifest.json` file. It contains:
+
+1. The basic information of the content pack like identities and human readable information.
+2. The configuration of the content pack which applies globally in this pack.
+3. The dependencies and incompatibilities of the content pack.
+4. The abilities provided by the content pack.
+
+## Format Version
+
+This is also one of CherryGrove's design principles: every version is just a `u64`.
+
+## Metadata
+
+These fields are for human and are optional, but recommended to fill in. They will be shown to users in various places.
+
+## Compatibility
+
+These fields are required and are used to ensure compatibility between content packs and the engine, as well as between content packs.
+
+## Abilities
+
+If you have been to Bedrock Addon development, you may be familiar with the God `main.js` where you constantly forgetting to import your newly created scripts. In CherryGrove, you can forget adding abilities in your `manifest.json` file. Cool, right?
+
+## Example
+
+```json
+{
+    "formatVersion": 1,
+
+//Metadata
+    "name": "My Content Pack", //Optional
+    "description": "This is my first content pack.", //Optional
+    "authors": ["Your Name"], //Optional
+
+//Compatibility
+    "uuid": "00000000-0000-0000-0000-000000000001", //Required, must be a valid UUID and unique
+    "nameSpace": "my_content_pack", //Required, must be non-empty and unique
+    "version": 1, //Required, content pack's version, must be a positive integer
+    "minEngineVersion": 1, //Required, LEV(Latest Engine Version) is 1
+    "dependencies": [
+        {
+            //Required, must be a valid UUID
+            "uuid": "00000000-0000-0000-0000-000000000002",
+            //Optional, if specified, the dependency's version must be >= minVersion
+            "minVersion": 1,
+            //Optional, if specified, the dependency's version must be <= maxVersion
+            "maxVersion": 2
+        }
+    ],
+    "knownIncompatibilities": [
+        {
+            //Required, must be a valid UUID
+            "uuid": "00000000-0000-0000-0000-000000000003",
+            //Optional, if specified, the incompatible content pack's version must be >= minVersion to be considered incompatible
+            "minVersion": 1,
+            //Optional, if specified, the incompatible content pack's version must be <= maxVersion to be considered incompatible
+            "maxVersion": 2
+        }
+    ],
+
+    "configs": {
+        "alwaysLoad": false, //Optional, if true, this content pack will always be loaded for the world
+        "licenseLibre": false, //Optional, if true, this content pack is considered free/libre software and CherryGrove will not warn user about possible license issues
+        "allowUnsafeExecution": false //Optional, if true, this content pack is allowed to execute dynamic code(e.g. JS's eval(), Lua's load(), etc.)
+    },
+
+    "abilities": [
+        {
+            "ability": "loadOnStartup",
+            "entryPoint": "load.wasm"
+        }
+    ],
+
+    "permissions": [
+        "network"
+    ],
+
+    "customOptions": [
+        {
+            "name": "my_option",
+            "type": "int",
+            "default": 42
+        }
+    ]
+}
+```

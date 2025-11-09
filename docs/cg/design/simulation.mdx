@@ -70,3 +70,9 @@ After a lot of thinking, I came up with a design like this:
 6. Render current state
 
 Surprisingly it's not "read input, update state, render output" but "update state, read input, render output". This is because multiplayer fairness. If we read input at the beginning, players with low latency will be able to modify the world state one tick earlier than players with high latency. Yes we're actually caring for the future multiplayer era.
+
+## Adoptive Ticking
+
+The question for every video game is: which reference should we align the ticking system to? Some just use turn-based system where there is no concept like time in the game, some use real-time system where the game state is updated according to real-world time, and some use a fixed-tick system where the game state is updated at a fixed rate regardless of real-world time.
+
+CherryGrove uses a fixed-tick system just like Minecraft. But the tick rate is not fixed. It's meant to solve the biggest problem of fixed-tick system: time resolution.

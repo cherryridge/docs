@@ -4,22 +4,22 @@ sidebar_position: 2
 
 # Packing CherryGrove
 
-This tutorial will help you pack the installer of CherryGrove for each platform. All packing related resources are located under the `packing` directory.
+This tutorial will help you pack the files and generate the installer / package for each platform. All packing related resources are located under the `packing` directory.
 
 :::warning
-Remember to abide by the [terms](../../legal) when you want to distribute your builds.
+Remember to abide by the [Terms of Use](../../legal#terms-of-use) when you want to distribute your builds.
 :::
 
 ## Microsoft Windows
 
-CherryGrove currently uses NSIS (Nullsoft Scriptable Install System) to pack for installer on Microsoft Windows. Download and install it at: https://nsis.sourceforge.io/Download.
+CherryGrove currently uses Inno Setup to pack for installer on Microsoft Windows. Download and install it at https://jrsoftware.org/isdl.php.
 
-NSIS uses `.nsi` script files to build the installer, which can be found at `packing/windows`. If you want to do a standard packing procedure, follow these steps:
+Inno Setup uses `.iss` script files to build the installer, which can be found at `packing/windows`. If you want to do a standard packing procedure, follow these steps:
 
-1. Build the **release** version of CherryGrove.
-2. Run `packing/windows/pack.bat` and wait for all language varieties to be built.
+1. Build the **release** version of CherryGrove, and check if it works properly and locates **exactly** at `out/windows-x64-release` directory.
+2. Run `packing/windows/pack.bat`. You should see an installer file `CherryGrove_setup_win64.exe` generated inside the same directory.
 
-Adjust the code in the scripts to create your custom procedures.
+Adjust the code in the script to create your custom procedure.
 
 ## Linux
 

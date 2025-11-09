@@ -1,6 +1,6 @@
 {
     "label": "World Generation",
-    "position": 106,
+    "position": 105,
     "link": {
         "type": "doc",
         "id": "pack/umi/worldgen/index"

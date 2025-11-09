@@ -1,6 +1,6 @@
 {
     "label": "Account",
-    "position": 114,
+    "position": 501,
     "link": {
         "type": "doc",
         "id": "pack/umi/account/index"

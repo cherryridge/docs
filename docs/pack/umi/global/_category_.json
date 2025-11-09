@@ -1,6 +1,6 @@
 {
     "label": "Global State",
-    "position": 105,
+    "position": 104,
     "link": {
         "type": "doc",
         "id": "pack/umi/global/index"

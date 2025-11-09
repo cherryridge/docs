@@ -13,7 +13,6 @@ const config :Config = {
     trailingSlash: false,
 
     onBrokenLinks: "throw",
-    onBrokenMarkdownLinks: "warn",
 
     i18n: {
         defaultLocale: "en",
@@ -21,7 +20,10 @@ const config :Config = {
     },
 
     markdown: {
-        mermaid: true
+        mermaid: true,
+        hooks: {
+            onBrokenMarkdownLinks: "warn"
+        }
     },
 
     clientModules: [
@@ -197,7 +199,7 @@ const config :Config = {
                         },
                         {
                             label: "Youtube",
-                            href: "https://youtube.com/@cherrygrove_dev"
+                            href: "https://youtube.com/@cherrygrove_dev1"
                         },
                         {
                             label: "BlueSky",
@@ -205,7 +207,7 @@ const config :Config = {
                         },
                         {
                             label: "Twitch",
-                            href: "https://twitch.tv/cherryridgehq"
+                            href: "https://twitch.tv/cherrygrove_dev"
                         },
                         {
                             label: "X",

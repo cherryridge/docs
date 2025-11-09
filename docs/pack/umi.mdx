@@ -44,12 +44,6 @@ Reference landing page for UMI (Unified Modding Interface) for content pack crea
         },
         {
             type: "link",
-            href: "/pack/umi/composite",
-            label: "Composite",
-            description: "Register entities that have multiple body parts, like vehicles or complex creatures."
-        },
-        {
-            type: "link",
             href: "/pack/umi/structure",
             label: "Structure",
             description: "Register a collection of blocks, entities and other structures to manage them as a whole."
@@ -88,6 +82,12 @@ Reference landing page for UMI (Unified Modding Interface) for content pack crea
         },
         {
             type: "link",
+            href: "/pack/umi/particle",
+            label: "Particle",
+            description: "Register 2D sprites or 3D models and spawn them as visual effects."
+        },
+        {
+            type: "link",
             href: "/pack/umi/sound",
             label: "Sound",
             description: "Integrate audio effects and music to the game."
@@ -97,9 +97,19 @@ Reference landing page for UMI (Unified Modding Interface) for content pack crea
             href: "/pack/umi/gui",
             label: "GUI",
             description: "Compose your own GUI with widgets and layouts."
+        },
+        {
+            type: "link",
+            href: "/pack/umi/command",
+            label: "Command",
+            description: "Register custom events for the intrinsic GUI called 'chat'."
         }
     ]}
 />
+
+## Network
+
+
 
 ## Utility
 
@@ -137,6 +147,20 @@ Reference landing page for UMI (Unified Modding Interface) for content pack crea
             href: "/pack/umi/account",
             label: "Account",
             description: "Validate if the user has access to your paid content pack."
+        }
+    ]}
+/>
+
+## Miscellaneous
+
+<DocCardList
+    className="desc-lg"
+    items={[
+        {
+            type: "link",
+            href: "/pack/umi/debug",
+            label: "Debug",
+            description: "Gadgets for debugging your content pack."
         }
     ]}
 />

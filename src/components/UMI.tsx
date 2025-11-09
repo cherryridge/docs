@@ -1,6 +1,6 @@
 ﻿import Tabs from "@theme/Tabs";
 import TabItem from "@theme/TabItem";
-import Adomination from "@theme/Admonition";
+import Admonition from "@theme/Admonition";
 import React from "react";
 
 const fallback :string = "The API reference in this language is not available yet.";
@@ -11,7 +11,7 @@ type UmiFeatureProps = {
 }
 
 export function UmiFeature({children, exclude} :UmiFeatureProps){
-    console.log(children);
+    //console.log(children);
     const realChildren = React.isValidElement(children) ? [children] : children;
     return(<Tabs groupId="language">
         {exclude && (exclude == "json" || (typeof exclude == "object" && exclude.includes("json"))) ? null : <TabItem value="json" label="JSON">{realChildren[0] ?? fallback}</TabItem>}
@@ -28,7 +28,7 @@ type OnlyInProps = {
 }
 
 export function OnlyIn({children, level, lang} :OnlyInProps){
-    return(<Adomination type={level ?? "info"} title={lang ? typeof lang == "string" ? `ONLY IN ${lang}` : `ONLY IN ${lang.join(", ")}` : ""}>{children}</Adomination>);
+    return(<Admonition type={level ?? "info"} title={lang ? typeof lang == "string" ? `ONLY IN ${lang}` : `ONLY IN ${lang.join(", ")}` : ""}>{children}</Admonition>);
 }
 
 type StartInProps = {
@@ -36,8 +36,14 @@ type StartInProps = {
     version :string;
 }
 
-export function StartIn({children, version} :StartInProps){
+export function StartingInVersion({children, version} :StartInProps){
     return(<div className="">
 
+    </div>);
+}
+
+export function DeprecatedInVersion({children, version} :StartInProps){
+    return(<div className="">
+        
     </div>);
 }
