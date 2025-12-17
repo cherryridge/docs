@@ -76,6 +76,7 @@ export default {
         "vanilla/overview",
         "vanilla/design",
         "vanilla/contributing",
+        "vanilla/coding",
         {
             type: "category",
             label: "Tutorial",

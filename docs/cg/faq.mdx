@@ -18,23 +18,48 @@ Note that CherryGrove has dropped support plan for WebAssembly platform via Emsc
 
 Currently there isn't a place for content pack showcases. You might need to search through GitHub to find some.
 
-## Development
+## Design & Development
 
-### How can I contribute to the project?
+### Why not just use an existing engine like Godot / Unity / Unreal Engine?
 
-Thank you for your interest. Please check out the [Contributing](contributing) page for more infomation.
+Because:
+
+1. Most existing engines are not designed for games with high degrees of freedom. Most games have levels, stories, and linear gameplay. Block games like Minecraft are fundamentally different. I would even argue that sandbox games are not traditional "games", but rather a tool or platform for creativity and expression. Existing engines are not optimized for such use cases, both in runtime performance and in development experience.
+
+2. Also, most existing engines or most games are not designed to be modded. They are designed to be shipped as a finished product, and modding support is usually an afterthought, to respond to the community demand, or to keep the game alive for a longer time. That's also why Minecraft Java's modding scene is so messy: Mojang never designed the game to be modded in the first place. CherryGrove is designed to be modded, or more accurately, to be ready to accept user-generated content from day one.
 
 ### Why not use Rust for such a modern project?
 
 Because Rust is too opinionated. C++ is wonderful because it's so unopinionated and flexible and allows ourselves to establish the most efficient and clear ways to do specific things.
 
-Think about it: There is X ways in total that developer can do a thing, and Y ways that is dangerous and will cause bugs, especially memory-related bugs; P ways that are safe; and Q ways that are in a gray area: They will cause bugs if not used carefully, or under certain circumstances. Y, P and Q are not intersected and complete subset of X. Designing a good programming language is trying to pick a custom subset of X that maximizes P and maximizes safe Q by conditionally allowing them, and don't include any Y. But the real world is too complex to allow perfect subsets. There are two common approaches: pick more Q and even some of Y to ensure P is maximized, and pick less Q, even giving up some P to ensure Y is minimized. C++ is the former and Rust is the latter. So Rust is born to be less performant and less flexible because it just can't do something C++ can do, even when they are completely safe in the specific context.
+<details>
+    <summary>What do you mean by "opinionated"?</summary>
 
-And also, Rust's grammar is biased towards functional programming, and functional programming is not the best way to write a game framework.
+    Think about it: There is X ways in total that developer can do a thing, and Y ways that is dangerous and will cause bugs, especially memory-related bugs; P ways that are safe; and Q ways that are in a gray area: They will cause bugs if not used carefully, or under certain circumstances. Y, P and Q are not intersected, and they form a complete subset of X. Designing a good programming language is trying to pick a custom subset of X that maximizes P and maximizes safe Q by conditionally allowing them, and don't include any Y. But the real world is too complex to allow perfect subsets. There are two common approaches: pick more Q and even some of Y to ensure P is maximized, and pick less Q, even giving up some P to ensure Y is minimized. C++ is the former and Rust is the latter. So Rust is born to have more risk to go less performant. You have to pray to the compiler God to know how to optimize your safe code into performant code which it thinks is unsafe enough to reject if you try to write it yourself. Although you will do the same prayer in C++ as well, at least you have the chance to use `__builtin_*`, `memcpy`, `std::atomic` and other low level constructs to optimize your code manually.
 
-What's more, Rust vs C++ is just like machinery vs craftsmanship. Both of them can be really modern, it's the flexibility (and subsequently, development speed) that has separated them apart. We are code craftsmen, and we like doing creative (even sometimes hack) things to tame the computer. Here is where our sense of achievement come from, which Rust has eliminated most of to keep ourselves focus on the development task and make us a easily replacable cog in the company machine.
+    Yes, there is unsafe Rust, but if we are going to use unsafe Rust, why not just use C++ which is much more flexible?
 
-Don't even mention the ecosystem.
+    And what is "safety" after all? It's just all bits in metals represented by voltages. Even the biggest safety of protected mode and real mode in CPU is just ONE SINGLE BIT in a control register. Something HAS TO be unsafe at some level. Safety does not come from nothing, it comes from ABSTRACTION, which IS CODE THEMSELVES. And to get safe, YOU HAVE TO WRITE UNSAFE CODE FIRST to abstract away the unsafe physical world. That's why safety will always comes with a performance cost or a flexibility cost. *(Did I forget to tell you? Compilation time is also considered a performance issue if it's too long.)* The most laughable thing in this particular discussion is that modern Rust is built on top of LLVM, which is written in C++ and LLVM IR, which is COMPLETELY UNSAFE.
+
+    Modern C++ is safe, if you know which parts to use and use it properly. The critiques against C++'s safety usually revolve around "many projects are not possible to refactor to modern C++", which is an old project problem and thus irrelevant to CherryGrove. So, if you ask me why not use Rust for such a modern project, I will say, why not use modern C++ for such a modern project?
+
+    And also, Rust's grammar is biased towards functional programming, which is very suited for utilities and command line tools that's basically a bunch of data transformations. However, it's not a fun way to write a game. In fact, Rust is generally not recommended for game development, because of its strict "do everything right, or error out" philosophy is fundamentally against the game development's "make it work first, optimize later" philosophy. **But this is not the main issue of "opinionated"ness.**
+
+    Don't even mention the ecosystem for game development in Rust.
+</details>
+
+### How about Luanti?
+
+You're a veteran if you know [Luanti](https://luanti.org) (or Minetest). It's much older than CherryGrove, and it's an absolutely great project in trying to remake Minecraft in an open way. However, I personally think that Luanti has some fundamental design issues that makes it hard to evolve into a general purpose block (or voxel) game engine, rather than just a Minecraft emulator:
+
+1. There is too many builtin assumptions coming from Minecraft.
+2. Mods have too little control over the engine.
+
+I highly respect the Luanti project and its contributors for their great work. They're pioneers in the open source Minecraft-like game engine space, and I understand its design decisions to be what it is today. However, I want to make a different project that tries to solve the problems above, and CherryGrove is born.
+
+### How can I contribute to the project?
+
+Thank you for your interest. Please check out the [Contributing](contributing) page for more infomation.
 
 ## Background Information
 
@@ -52,12 +77,12 @@ When LJM12914 created the GitHub organization `cherry-grove` as the first organi
 
 This logo symbolizes a tree (possibly a cherry tree) growing on a crack of a cliff/ledge. The green color (CherryGrove green, `#5bd093`) is also generated alongside with the default icon.
 
-The logo also shows a tendency to converge towards the center, which we personally think that symbolizes the open-source spirit of commitment to freedom, collaboration, and transparency.
+The logo also shows a tendency to converge towards the center, which I personally think that symbolizes the openness spirit of commitment to freedom, collaboration, and transparency.
 
 Some people might perceive the logo as a face, even a modified creeper face or a totem of undying. The logo has nothing to do with them.
 
 :::note
-Do you know that every logo for products within CherryRidge also has exactly 13 pixels in them? That's a tradition starting from CherryGrove's logo.
+Do you know that every logo for products within CherryRidge also has exactly 13 pixels filled in a 5×5 grid? That's a tradition starting from CherryGrove's logo.
 :::
 
 ## Licensing
