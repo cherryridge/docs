@@ -2,6 +2,8 @@
 title: "Overview"
 ---
 
+import Admonition from "@theme/Admonition";
+
 # CherryGrove
 
 CherryGrove is a block game framework (or engine, if you like). It comes with little built-in gameplay functionalities but a ton of modding features, making it highly customizable and suitable for meta creating your own block game where your can build your dream world or experience a wonderful surviving journey.
@@ -12,14 +14,15 @@ CherryGrove is designed to be free and source available software **with commerci
 
 ## Supported Platforms
 
-<details>
-    <summary>**Atlas**</summary>
-    - ☑️: Fully supported.
-    - ✅: Theoretically supported (functionality not verified).
-    - 🚧: Working in progress.
-    - 🚩: Planned to support.
-    - 🚫: No plan to support/not applicable.
-</details>
+<Admonition type="info" title="Warning">This is the executable-level compatibility table. See [here](releasing/distribution) for distribution.</Admonition>
+
+<Admonition type="tip" title="Atlas">
+ - ☑️: Fully supported.
+ - ✅: Theoretically supported (functionality not verified).
+ - 🚧: Working in progress.
+ - 🚩: Planned to support.
+ - 🚫: No plan to support/not applicable.
+</Admonition>
 
 <table style={{textAlign: "center"}}>
     <thead><tr>
@@ -34,32 +37,14 @@ CherryGrove is designed to be free and source available software **with commerci
     </tr></thead>
     <tbody>
         <tr>
-            <th>x86^</th>
-            <td>🚫</td>
-            <td>🚫</td>
-            <td>🚫</td>
-            <td>🚫</td>
-            <td>🚫</td>
-            <td>🚫</td>
-            <td rowSpan={4}>🚫*</td>
-        </tr>
-        <tr>
             <th>x64</th>
             <td>☑️</td>
-            <td>☑️</td>
-            <td>☑️</td>
+            <td>✅</td>
+            <td>✅</td>
             <td>🚩</td>
             <td>🚫</td>
             <td>🚫</td>
-        </tr>
-        <tr>
-            <th>arm32^</th>
-            <td>🚫</td>
-            <td>🚫</td>
-            <td>🚫</td>
-            <td>🚫</td>
-            <td>🚫</td>
-            <td>🚫</td>
+            <td rowSpan={2}>🚫*</td>
         </tr>
         <tr>
             <th>arm64</th>
@@ -67,19 +52,19 @@ CherryGrove is designed to be free and source available software **with commerci
             <td>✅</td>
             <td>✅</td>
             <td>🚩</td>
-            <td>🚩^^</td>
-            <td>🚩^^</td>
+            <td>🚩^</td>
+            <td>🚩^</td>
         </tr>
     </tbody>
 </table>
 
 \*: V8 currently can't run on WASM platform. If so, it will be able to effectively run on itself, which is awesome but not now.
 
-^: We have dropped x86 and arm32 because it's just outdated and not worth the limited resource. Theoretically it's able to compile and run, but some mysterious and unexplainable bugs may occur.
-
-^^: We need more investment for the project to bring it to App Store.
+^: We need more investment for the project to bring it to App Store.
 
 ---
+
+## Dive In
 
 To visit documentation about CherryGrove Vanilla, please refer to the [Vanilla](../vanilla/overview) section.
 

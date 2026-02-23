@@ -1,0 +1,8 @@
+{
+    "label": "Proxy",
+    "position": 501,
+    "link": {
+        "type": "doc",
+        "id": "pack/umi/proxy/index"
+    }
+}

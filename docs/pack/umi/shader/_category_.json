@@ -1,0 +1,8 @@
+{
+    "label": "Shader",
+    "position": 205,
+    "link": {
+        "type": "doc",
+        "id": "pack/umi/shader/index"
+    }
+}

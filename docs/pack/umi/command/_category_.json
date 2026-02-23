@@ -1,6 +1,6 @@
 {
     "label": "Command",
-    "position": 206,
+    "position": 208,
     "link": {
         "type": "doc",
         "id": "pack/umi/command/index"

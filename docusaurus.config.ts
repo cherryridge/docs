@@ -219,7 +219,7 @@ const config :Config = {
             copyright: `
                 <div style="padding-top:1rem">
                     <div>Copyright © ${new Date().getFullYear()} CherryGrove Contributors.</div>
-                    <div><a href="/legal#terms-of-use">Terms of Use</a>&emsp;<a href="/legal-for-docs">Documentation License</a></div>
+                    <div><a href="/legal#terms-of-use">Terms of Use</a>&emsp;<a href="/legal-for-docs">Docs License</a>&emsp;<a href="/attributions">Attributions</a></div>
                 </div>
             `
         },

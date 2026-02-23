@@ -1,0 +1,8 @@
+{
+    "label": "Multimedia",
+    "position": 404,
+    "link": {
+        "type": "doc",
+        "id": "pack/umi/multimedia/index"
+    }
+}

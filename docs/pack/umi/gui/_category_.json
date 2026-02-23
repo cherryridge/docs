@@ -1,6 +1,6 @@
 {
     "label": "GUI",
-    "position": 205,
+    "position": 207,
     "link": {
         "type": "doc",
         "id": "pack/umi/gui/index"

@@ -18,7 +18,7 @@ CherryGrove uses almost-the-best engines for these languages, namely:
 
 - JavaScript, via [V8](https://v8.dev).
 - WebAssembly, via [Wasmtime](https://wasmtime.dev).
-- Lua, via [LuaJIT](https://luajit.org).
+- Lua, via [Luau](https://luau-lang.org).
 
 In order to support different content pack languages, CherryGrove implemented a layer of abstraction called Unified *Modding* Interface (UMI), which name is mostly for historical reasons and exposes a unified API for all language "frontends". In the JSON API, we call UMI functions in the background. In the other three APIs, we directly expose UMI functions to the scripts via the engines.
 
@@ -26,7 +26,7 @@ In order to support different content pack languages, CherryGrove implemented a 
 block-beta
     columns 4
     A["JSON API"] B["JS API"] C["WASM API"] D["Lua API"]
-    nlohmann_json V8 Wasmtime LuaJIT
+    nlohmann_json V8 Wasmtime Luau
     E["Unified Modding Interface"]:4
     F["Lower Level Systems"]:4
 ```

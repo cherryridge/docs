@@ -1,0 +1,8 @@
+{
+    "label": "Render",
+    "position": 502,
+    "link": {
+        "type": "doc",
+        "id": "pack/umi/render/index"
+    }
+}

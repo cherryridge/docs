@@ -20,12 +20,12 @@ Reference landing page for UMI (Unified Modding Interface) for content pack crea
             <img className="twemoji" src="https://cdn.jsdelivr.net/gh/devicons/devicon@latest/icons/wasm/wasm-original.svg" /> [WebAssembly](languages/wasm) is the way to create large and complex content packs or base libraries with high performance.
         </>
         <>
-            <img className="twemoji" src="https://cdn.jsdelivr.net/gh/devicons/devicon@latest/icons/lua/lua-original.svg" /> [Lua](languages/lua) is mostly an industry-compatible way to create content packs and is generally not recommended.
+            <img className="twemoji" src="https://cdn.jsdelivr.net/gh/devicons/devicon@latest/icons/lua/lua-original.svg" /> [Lua](languages/lua) is mostly an industry-compatible way to create content packs but is generally not recommended.
         </>
     </UmiFeature>
 </details>
 
-## Gameplay
+## Game Content
 
 <DocCardList
     className="desc-lg"
@@ -34,13 +34,13 @@ Reference landing page for UMI (Unified Modding Interface) for content pack crea
             type: "link",
             href: "/pack/umi/block",
             label: "Block",
-            description: "Register blocks with unique properties."
+            description: "Register the fundamental unit of the world."
         },
         {
             type: "link",
             href: "/pack/umi/entity",
             label: "Entity",
-            description: "Register entities with, uh, unique properties."
+            description: "Register the fundamental unit of the world which can move."
         },
         {
             type: "link",
@@ -50,9 +50,15 @@ Reference landing page for UMI (Unified Modding Interface) for content pack crea
         },
         {
             type: "link",
+            href: "/pack/umi/locality",
+            label: "Locality",
+            description: "Manage the invisible data of specific areas in the world, such as biomes."
+        },
+        {
+            type: "link",
             href: "/pack/umi/global",
             label: "Global State",
-            description: "Manage the global data of the game world."
+            description: "Manage the global data of the world."
         },
         {
             type: "link",
@@ -94,6 +100,18 @@ Reference landing page for UMI (Unified Modding Interface) for content pack crea
         },
         {
             type: "link",
+            href: "/pack/umi/shader",
+            label: "Shader",
+            description: "Use a custom language to write shaders and change the way the world looks like."
+        },
+        {
+            type: "link",
+            href: "/pack/umi/input",
+            label: "Input",
+            description: "Register custom input events to trigger your content pack features."
+        },
+        {
+            type: "link",
             href: "/pack/umi/gui",
             label: "GUI",
             description: "Compose your own GUI with widgets and layouts."
@@ -102,14 +120,10 @@ Reference landing page for UMI (Unified Modding Interface) for content pack crea
             type: "link",
             href: "/pack/umi/command",
             label: "Command",
-            description: "Register custom events for the intrinsic GUI called 'chat'."
+            description: "Add custom behaviors to an intrinsic GUI called `:chat`."
         }
     ]}
 />
-
-## Network
-
-
 
 ## Utility
 
@@ -120,19 +134,81 @@ Reference landing page for UMI (Unified Modding Interface) for content pack crea
             type: "link",
             href: "/pack/umi/component",
             label: "Component",
-            description: "Register components to modularize your code, or create a reusable library."
+            description: "Register components so you can actually store anything in the world."
         },
         {
             type: "link",
             href: "/pack/umi/tag",
             label: "Tag",
-            description: "Register and use tags to categorize and maintain compatibility between content packs."
+            description: "Register and use tags (not-stored components) to categorize and maintain compatibility between content packs."
         },
         {
             type: "link",
             href: "/pack/umi/template",
             label: "Template",
-            description: "Master the power of templates to create content quickly."
+            description: "Master the power of templates to create content quickly and robustly. No more copy-paste!"
+        },
+        {
+            type: "link",
+            href: "/pack/umi/debug",
+            label: "Debug",
+            description: "Gadgets for debugging your content pack."
+        }
+    ]}
+/>
+
+## Permission-based Features
+
+The features listed here require the user to explicitly grant permission to the content pack.
+
+<DocCardList
+    className="desc-lg"
+    items={[
+        {
+            type: "link",
+            href: "/pack/umi/request",
+            label: "Request",
+            description: "A separated and customizable network channel for your content pack to surf the internet."
+        },
+        {
+            type: "link",
+            href: "/pack/umi/file",
+            label: "File I/O",
+            description: "A way to read and write files on the user's computer. I hope they are all genuine files..."
+        },
+        {
+            type: "link",
+            href: "/pack/umi/location",
+            label: "User Location",
+            description: "I don't know why you would need this, but it's here."
+        },
+        {
+            type: "link",
+            href: "/pack/umi/multimedia",
+            label: "Multimedia",
+            description: "Access the camera and/or microphone for proximity chat or identity theft. Use it wisely."
+        }
+    ]}
+/>
+
+## Higher (or Lower?) Level APIs
+
+The features listed here require the user to explicitly grant permission to the content pack, and their APIs are only exposed to the WebAssembly frontend for performance and security reasons.
+
+<DocCardList
+    className="desc-lg"
+    items={[
+        {
+            type: "link",
+            href: "/pack/umi/proxy",
+            label: "Proxy",
+            description: "Intercept and modify network packets to achieve features that are otherwise impossible."
+        },
+        {
+            type: "link",
+            href: "/pack/umi/render",
+            label: "Low-level Rendering",
+            description: "Bring your own rendering engine to the game and rewrite the way players see the world."
         }
     ]}
 />
@@ -147,20 +223,6 @@ Reference landing page for UMI (Unified Modding Interface) for content pack crea
             href: "/pack/umi/account",
             label: "Account",
             description: "Validate if the user has access to your paid content pack."
-        }
-    ]}
-/>
-
-## Miscellaneous
-
-<DocCardList
-    className="desc-lg"
-    items={[
-        {
-            type: "link",
-            href: "/pack/umi/debug",
-            label: "Debug",
-            description: "Gadgets for debugging your content pack."
         }
     ]}
 />

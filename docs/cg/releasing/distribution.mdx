@@ -2,6 +2,8 @@
 sidebar_position: 3
 ---
 
+import Admonition from "@theme/Admonition";
+
 # Distribution Situation
 
 There are two ways to distribute softwares today: independent distribution and package managers/stores.
@@ -12,7 +14,7 @@ CherryGrove supports multi-instancing. More on that at [multiple instance suppor
 
 ### Independent Distribution
 
-Currently the best practice is to use the NSIS installer, which is also an instanced installer and users can choose from a portable installation or a normal installation.
+Currently we are using the Inno Setup installer, which is an instanced installer and users can choose from a normal and a portable installation.
 
 ### Package Managers & Stores
 
@@ -24,7 +26,7 @@ There is really no good package manager for Windows, so we only plan to distribu
 
 To simplify the situation, we use AppImage for all Linux distros. If users want to multi-instance, they can use the archive or run `--appimage-extract` to extract the AppImage to a directory.
 
-Note that AppImage itself treats every AppImage as a single, global instance, so it will not allow you to isolate the data for two fundamentally separated AppImage files. It's a limitation, but more like a intended feature. We're simply too special.
+Note that AppImage itself treats every AppImage identical file as a single, global instance, regardless of their location or name. So directly running AppImages without extraction won't enable multi-instancing. It's a limitation, but more like a intended feature. We're simply too special.
 
 ### Package Managers & Stores
 
@@ -46,7 +48,7 @@ We plan to distribute on Mac App Store when we can afford it.
 
 CherryGrove provides the main APK files, as well as APKs with different package names for every version for some basic multi-instancing support.
 
-Note that CherryGrove don't support x86 or armv7a architectures. See [supported platforms](../overview#supported-platforms).
+Note that CherryGrove don't support x86 or armv7a architectures. See [supported platforms](../overview#supported-platforms). There's just no row for them.
 
 ### Package Managers & Stores
 
@@ -66,24 +68,23 @@ We plan to distribute on App Store when we can afford it.
 
 As an game that tries to be as "open", CherryGrove needs to support multi-instancing, i.e. users can install and **run** multiple **fundamentally separated** instances of CherryGrove on the same device. This is a very important feature, however some platforms are just hostile to duplicated installations.
 
-The most easy way for multi-instancing is the green software approach, i.e. a compressed archive that users can decompress to a directory and run the executable directly. Another way is the "instanced installer", which can either be a self-extracting archive or a installer that allows users to choose the installation directory and disable registry entries and shortcuts, or an APK with a different package name on Android. Provided that users can run executables in custom directories, it would be a good way for now, but it's a luxury to do so on some platforms. We plan to replace this approach entirely with Beehive in the future.
+The most easy way for multi-instancing is the green software approach, i.e. a compressed archive that users can decompress to a directory and run the executable directly. Another way is the "instanced installer", which can either be a self-extracting archive or a installer that allows users to choose the installation directory and disable registry entries and shortcuts, or an APK with a different package name on Android. Provided that users can run executables in custom directories, it would be a good way for now, but it's a luxury to do so on some platforms.
 
-But theoretically the best way is an instance manager like MultiMC or the official Minecraft Launcher. We plan to develop one called [Beehive](https://github.com/cherryridge/Beehive) in the future. It's basically MultiMC but for CherryGrove that allows users to install, manage, run and uninstall multiple instances of CherryGrove. It is currently in development planning. Don't expect it to be available soon.
+But theoretically the best way is an instance manager like MultiMC or the official Minecraft Launcher. We plan to develop one called [Beehive](https://github.com/cherryridge/Beehive) in the future. It's basically MultiMC but for CherryGrove that allows users to install and manage multiple instances of CherryGrove. It is currently in early development planning. Don't expect it to be available soon.
 
 ## Platform-Agnostic Distribution
 
-### Beehive
+### Beehive (which itself is still platform-specific)
 
 Support table:
 
-<details>
-    <summary>**Atlas**</summary>
-    - ☑️: Fully supported.
-    - ✅: Theoretically supported (functionality not verified).
-    - 🚧: Working in progress.
-    - 🚩: Planned to support.
-    - 🚫: No plan to support/not applicable.
-</details>
+<Admonition type="tip" title="Atlas">
+ - ☑️: Fully supported.
+ - ✅: Theoretically supported (functionality not verified).
+ - 🚧: Working in progress.
+ - 🚩: Planned to support.
+ - 🚫: No plan to support/not applicable.
+</Admonition>
 
 <table style={{textAlign: "center"}}>
     <thead><tr>

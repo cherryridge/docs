@@ -30,11 +30,9 @@ graph LR
     A-->C(entt)
     B-->D(V8)
     B-->E(Wasmtime)
-    B-->F(LuaJIT)
+    B-->F(Luau)
     B-->G[JSON Parser]
-    G-->g(nlohmann_json)
-    G-->gg(json_schema_validator)
-    gg-->g
+    G-->g(glaze)
     B-->H[Pack System]
     I[World Generation]-->B
     A-->J[Save System]

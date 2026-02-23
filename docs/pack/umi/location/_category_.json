@@ -1,0 +1,8 @@
+{
+    "label": "Location",
+    "position": 403,
+    "link": {
+        "type": "doc",
+        "id": "pack/umi/location/index"
+    }
+}
