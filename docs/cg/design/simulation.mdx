@@ -6,10 +6,12 @@ sidebar_position: 1
 
 This is the core of CherryGrove. We read input, update the state, and render output here.
 
-Let's take a look at Minecraft Java (oversimplified):
+## Do Some Research
+
+Let's start by first taking a look at Minecraft Java (oversimplified):
 
 1. Update TPS manager
-2. Run datapack functions with `#tick` or `#load` on reload
+2. Run datapack functions with `#tick`
 3. Per-dimension tick (overworld -> nether -> end -> custom)
     1. Update world border
     2. Update time, weather and daylight
@@ -35,39 +37,32 @@ Let's take a look at Minecraft Java (oversimplified):
 6. Send player info to clients
 7. Autosave every 6000 ticks
 
-The most important thing we take from this is not from any of the steps, but they are sequential and single-threaded, for everything in the world. So we might need to look at Folia and some truly multi-threaded games for multi-threading approach when we develop the server software, [CherrySlope](https://github.com/cherryridge/CherrySlope), which won't be released till 2100. For now the simulation system is single-threaded because in single player world we pretty much only have one place in the world that is ticking.
+The most important thing we take from this is not from any of the steps, but they are sequential and single-threaded, for everything in the world. So we might need to look at [Folia](https://papermc.io/software/folia) and some truly multi-threaded games for a multi-threading approach.
 
-Another thing is that the ticking function is very specific and don't provide a lot of insight to how to create a general simulation system. I even removed some of them to simplify it. But we can still find a pattern:
+And we found out that we cannot just multithread everything unless we want Bedrock level bugs everywhere. As far as I'm concerned, that best way has been implemented and it's right in front of our eyes: Regional ticking. It's based on the fact that most of the interactions are local, so distant events are not affected by asynchrony. There is only one precaution though: Minecraft 1.21.x finally implemented true interdimension interactions like ender pearls travelling through portals, making it officially the goal for CherryGrove to support them as well. So the region in CherryGrove should be able to be multidimensional. Since the dimensions is essentially cut in many halves, there should not be much difficuly in implementing this.
 
-1. The order to update dimension can be arbitrary, therefore it can also be multi-threaded.
-2. We probably should determine the chunks that are loaded first, then update them, then unload some of them.
-3. We should use a neighborhood update system like Java instead of a global update system like Bedrock. It will save a lot of performance and enable more complex in-game contraptions to be made.
+But we can still learn some things from Minecraft Java:
+
+1. We probably should determine the chunks that are loaded first, then update them, then unload some of them.
+2. We should use a neighborhood update system like Java instead of a global update system like Bedrock. It will save a lot of performance and enable more complex in-game contraptions to be made.
 
 After a lot of thinking, I came up with a design like this:
 
-1. Update TPS manager
-2. Send start signal to all loaded dimension threads
-3. In every dimension thread:
-    1. Update world border
-    2. Update gametime (it's a super-rare intrinsic state! Yay!)
-    3. Update global state
-        1. Call applicable content packs' `onGlobalUpdate` function
-        2. Merge results
-        3. Apply states
-    4. Update chunk load level
-    5. For all loaded chunks, execute at every applicable position pseudo-randomly:
-        1. Determine every entity that is in the chunk
-        2. For all blocks that are marked `tickable`, call their `onBlockTick` function
-        3. For all structures that are marked `tickable`, call their `onStructureTick` function
-        4. For all entities that are marked `tickable`, call their `onEntityTick` function
-        5. For all composites that are marked `tickable`, call their `onCompositeTick` function
-        6. For all "things" that are marked `randomTickable`, call their `onRandomTick` function
-        7. Merge results from all updates
-        8. Apply states
-    6. Push interdimension events to dimension event queue
-4. Execute interdimension events and merge results
-5. Execute player input functions from `InputHandler`
-6. Render current state
+1. Update global state
+2. Send start signal to all region threads
+3. In every region thread:
+    1. Update chunk load levels (start loading new chunks, unloading old chunks, etc.)
+    2. For all loaded chunks, execute at every applicable position with deterministic order based on pack priorities and types:
+        1. Run scheduled before events
+        2. Regular update blocks
+        3. Regular update entities
+        4. Regular update structures that is alive
+        5. Run scheduled after events
+        6. Write state diffs to the main registry
+4. Manage regions (load, unload, merge, split, etc.)
+5. Save to disk every several ticks
+6. Execute player input functions from `InputHandler`
+7. Render current state
 
 Surprisingly it's not "read input, update state, render output" but "update state, read input, render output". This is because multiplayer fairness. If we read input at the beginning, players with low latency will be able to modify the world state one tick earlier than players with high latency. Yes we're actually caring for the future multiplayer era.
 
@@ -75,4 +70,10 @@ Surprisingly it's not "read input, update state, render output" but "update stat
 
 The question for every video game is: which reference should we align the ticking system to? Some just use turn-based system where there is no concept like time in the game, some use real-time system where the game state is updated according to real-world time, and some use a fixed-tick system where the game state is updated at a fixed rate regardless of real-world time.
 
-CherryGrove uses a fixed-tick system just like Minecraft. But the tick rate is not fixed. It's meant to solve the biggest problem of fixed-tick system: time resolution.
+CherryGrove uses a fixed-tick system just like Minecraft, but the tick rate itself is not fixed. It's meant to solve the biggest problem of fixed-tick system: time resolution. The engine uses a separate and dynamic ticking system: We first demand an argument for every pack for its simulation resolution intentions, and merge them with user settings and hardware specs to decide a "planck time", which is the smallest resolution for time in the simulation.
+
+In simulation, we run the loop at "planck time" periods, and update packs that require higher time resolution at a faster rate more frequently and packs that require lower time resolution at a slower rate less frequently. For example, we deduced that the "planck time" is 1ms, and we have two packs: one is a redstone implementation that requires high time resolution, and the other is a pack that adds animal movements and player actions that requires low time resolution. So we run redstone packs' `onTick` function every one loop but the other pack's `onTick` function every 20 loops. This way we can save a lot of CPU resource while still maintaining the simulation accuracy for different packs.
+
+When an interaction that crosses time resolution boundary occurs, we will 1) run the low resolution pack immediately and prematurely, 2) queue up the interaction and wait for the next time the low resolution pack is supposed to run, essentially slowing down the high resolution pack's ticking at this and only this particular interaction while maintaining the exact ratio between them. Pack creators can choose from these two options.
+
+When a lag occurs, we will simply adjust the "planck time" to a higher value, so everything slows down while maintaining the exact ratio.
