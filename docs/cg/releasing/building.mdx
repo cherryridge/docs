@@ -343,8 +343,8 @@ You will probably need to download both `debug` and `release` builds if you want
 :::note
 #### Tips about bgfx's `shaderc`
 
-1. The bgfx dependency has a shader compiler (`shaderc`) in it, which will be invoked post-build. If you see some errors about execution permission, you might need to run `chmod +x lib/bgfx/<debug|release>/shaderc`.
-2. On Windows arm64, shader compiler (`shaderc.exe`) is actually an x64 build because of some weird incompatibility errors building it targetting arm64 Windows. It should work fine unless you're using an older version of arm64 Windows 10, which is really rare.
+1. The bgfx dependency has a shader compiler (`shaderc`) in it, which will be invoked post-build. If you see some errors about execution permission, you might need to run `chmod +x lib/bgfx/<debug|release>/bin/shaderc`.
+2. On Windows arm64, `shaderc.exe` is actually an x64 build because of some weird incompatibility errors building it targetting arm64 Windows. It should work fine unless you're using an older version of arm64 Windows 10, which is really rare.
 :::
 
 Links, in case you need to download these dependencies manually:
