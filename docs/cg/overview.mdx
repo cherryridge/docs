@@ -29,7 +29,7 @@ CherryGrove is designed to be free and source available software **with commerci
         <th></th>
         <th>Windows</th>
         <th>Linux</th>
-        <th>MacOS</th>
+        <th>macOS</th>
         <th>Android</th>
         <th>iOS</th>
         <th>iPadOS</th>
@@ -61,6 +61,22 @@ CherryGrove is designed to be free and source available software **with commerci
 \*: V8 currently can't run on WASM platform. If so, it will be able to effectively run on itself, which is awesome but not now.
 
 ^: We need more investment for the project to bring it to App Store.
+
+## The Goals
+
+CherryGrove aims for the best platform for creating and enjoying voxel games. Here are the merry goals:
+
+1. Strong infrastructure support for gameplays that pushes the extreme.
+    1. We aim for world size near the `i64` maximum (over 9 quintillion), as well as controllable cyclic world generation and playthrough (i.e. players are teleported seemlessly from one edge of the world to the opposite edge when they walk into the "border", with terrain generation perfectly lining up) to achieve true infinite worlds.
+    2. We design the world storage scheme with the world size of 10 2B2Ts in mind. We use Meta's fork of LevelDB — RocksDB, and use clustered chunks to store cold parts of the world.
+    3. Of course we use cubic chunks!
+    4. We aim for a fast renderer. However, we're currently in a lack of graphics programming skills.
+    5. Terrain generation in harmony. We aim for flexible terrain generation, and users can combine terrain generation packs however they like. We figure out each pack's "territory" and request them to fill the world. Terrain generation is persistent like in Java.
+    6. We operate the structure generation in a non-destructive way. There will be no more "I want this portal to fully generate but it just doesn't work" scenarios. Structures can be choosed to be committed to the world (thus giving up its control), or packs can choose not to and manage the structure as a whole by receiving events and selecting it.
+2. Ultra flexible content pack support, built on a solid foundation that strictly omits most of the gameplay content to enable more customization possibilities.
+    1. There is few intrinsic things that the game loads by default: Input actions, GUIs, etc. Every other aspect of gameplay is not builtin. You can't even create a normal world if there is no packs installed, because there is also no builtin terrain generator.
+    2. We smoothen the content creation by providing a lot of intrinsic components that packs can use as building blocks, such as inventory and mob-related behaviors.
+    3. Strong pack interaction to balance security and flexibility. Packs can overwrite another pack's behavior with consent, opening the gateway for meta modding. Packs can share registered objects and data, as well as arbitrary bytes, allowing the creation of library packs that provides a higher foundation for further development. But every pack can only access its data by default, and packs' RNG is secret seeded, to avoid RNG cracking. Packs can even request the user for file I/O, multimedia (microphone for proximity chat and camera for whatever reason) and IRL location. Finally, there is a danger zone that users can grant to packs to enable registry-level intercepting, rewrite the renderer, and proxy network packets.
 
 ---
 

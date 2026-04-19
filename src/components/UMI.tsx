@@ -2,6 +2,7 @@
 import TabItem from "@theme/TabItem";
 import Admonition from "@theme/Admonition";
 import React from "react";
+import { JSX } from "react";
 
 const fallback :string = "The API reference in this language is not available yet.";
 
@@ -12,7 +13,7 @@ type UmiFeatureProps = {
 
 export function UmiFeature({children, exclude} :UmiFeatureProps){
     //console.log(children);
-    const realChildren = React.isValidElement(children) ? [children] : children;
+    const realChildren = (React.isValidElement(children) ? [children] : children) as unknown as JSX.Element[];
     return(<Tabs groupId="language">
         {exclude && (exclude == "json" || (typeof exclude == "object" && exclude.includes("json"))) ? null : <TabItem value="json" label="JSON">{realChildren[0] ?? fallback}</TabItem>}
         {exclude && (exclude == "js" || (typeof exclude == "object" && exclude.includes("js"))) ? null : <TabItem value="js" label="JavaScript">{realChildren[1] ?? fallback}</TabItem>}
