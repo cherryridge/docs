@@ -13,153 +13,14 @@ CherryGrove is still in a very early stage of development. Please check CherryGr
 
 ## Introduction
 
-### Build System
-
-CherryGrove currently only uses CMake. We use the following dependency management strategies:
+CherryGrove currently only uses CMake as the build system. We use the following dependency management strategies:
 
 - For header-only libraries, we use Git submodules and CMake's `target_include_directories` to include them automatically.
 - For CMake compatible libraries, we use Git submodules and CMake's `add_subdirectory` command to import it.
 - For some libraries, we download the source code, commit them into our repository, and build them together with our code. Get more information at [Local Libraries Documentation](https://github.com/cherryridge/CherryGrove/blob/stable/libs/README.md#local-libraries).
 - For the rest of the libraries, we use GitHub Actions to build them in advance and **they need to be downloaded for CherryGrove to build**.
 
-### Build Toolchain
-
-Compiler: **It's recommended to use clang/LLVM-build toolchain on all platforms for better dead code eliminating and unified modern C++ support.**
-
-Linker: Use `lld-link` on Linux and macOS,
-
-Prebuilt dependencies assume linkage against the platform's default C++ Standard Library:
-
-- Windows: Microsoft STL
-- Linux: libstdc++
-- macOS: libc++
-
-Building CherryGrove using incorrect C++ Standard Library will result in an ABI conflict while linking. Please build the prebuilt dependencies manually if you really need another standard library.
-
-<Tabs groupId="os"><TabItem value="windows" label="Windows">
-
-Use Microsoft Visual Studio or VS Code to build CherryGrove on Windows.
-
-To get the toolchain, download the Microsoft Visual Studio installer from https://visualstudio.microsoft.com.
-
-Check **Desktop development with C++** in **Desktop & Mobile** section workload upon installing.
-
-Switch to **Individual Components** tab, and check the following components for the **clang/LLVM toolchain**:
-- `C++ Clang Compiler for Windows (xx.x.x)`
-- `MSBuild Support for LLVM (clang-cl) Toolset`
-
-If you need to target a different architecture (e.g. targetting arm64 Windows on x64 Windows), you should switch to **Individual Components** and check the MSVC component for the other architecture (e.g. `MSVC v1xx - VS 20xx C++ ARM64/ARM64EC build tools (latest)`).
-
-- If you prefer VS Code:
-
-Download and install VS Code from https://code.visualstudio.com.
-            
-Install [C/C++ Extension](https://marketplace.visualstudio.com/items?itemName=ms-vscode.cpptools) from Extensions Marketplace.
-
-<details>
-    <summary>Install [CMake Tools Extension](https://marketplace.visualstudio.com/items?itemName=ms-vscode.cmake-tools) from Extensions Marketplace.</summary>
-    <div>
-    If you don't want to manually type in commands for building and debugging, configure the extension so it shows buttons in the status bar:
-
-    ```json
-    "cmake.options.statusBarVisibility": "icon"
-    ```
-    </div>
-</details>
-
-**(Optional)** Install [CMake Extension](https://marketplace.visualstudio.com/items?itemName=twxs.cmake) from Extensions Marketplace for better CMake intellisense.
-
-**(Optional)** Install [C/C++ Themes Extension](https://marketplace.visualstudio.com/items?itemName=ms-vscode.cpptools-themes) for better C++ syntax highlighting.
-
-<details>
-<summary>**(Optional)** Install [clangd Extension](https://marketplace.visualstudio.com/items?itemName=llvm-vs-code-extensions.vscode-clangd) for better C++ language features in further development.</summary>
-<div>
-You also need to install `clangd` binary on your system. Download it from https://github.com/clangd/clangd/releases, or just use the automatic installation prompt from the extension, because the extension sometimes won't work with the latest clangd and you need to find the latest compatible one in O(n) yourself.
-
-After installing `clangd` manually, set up system PATH variable to include `clangd`'s installation directory, and configure VS Code to disable C/C++ Extension's IntelliSense engine to avoid conflicts:
-
-```json
-"C_Cpp.intelliSenseEngine": "disabled"
-```
-
-Clangd needs `compile_commands.json` to provide accurate language features. You can generate it using the CMake Tools Extension by adding this to your `settings.json`:
-
-```json
-"cmake.copyCompileCommands": "${workspaceFolder}/compile_commands.json",
-"clangd.arguments": [
-    //(Optional) Always index files even you don't open them
-    "--background-index",
-    //Point to `compile_commands.json` in the root directory
-    "--compile-commands-dir=${workspaceFolder}"
-]
-```
-</div>
-
-After setting up, send a `Cmake: Configure` command to generate `compile_commands.json`, and restart VS Code. Clangd should be working to generate caches now.
-</details>
-
-- If you're using Microsoft Visual Studio *(you're probably not preferring it)*:
-
-Go through the MSVC toolchain installation process and launch Visual Studio, then open the `cherrygrove` folder using **Open a local folder**, or click **Open with Visual Studio** in File Explorer.
-
-Visual Studio should automatically detect `CMakeLists.txt` and `CMakePresets.json`, and start generating the f\*\*king `linux-arm64-debug` configuration for you. Stop it by switching to another configuration like `windows-x64-debug`, but don't switch too fast or it will somehow break the process and fail to generate. Good luck.
-
-</TabItem><TabItem value="linux" label="Linux">
-
-It's recommended to use GCC to build CherryGrove on Linux.
-
-For example in Ubuntu, `gcc` and `g++` in the registry are actually really old versions of them. As for 2025, install `gcc-14` and `g++-14` on your system and set alternatives to get a more complete C++20 environment:
-
-```bash
-sudo apt install gcc-14 g++-14
-sudo update-alternatives --install /usr/bin/gcc gcc /usr/bin/gcc-14 100
-sudo update-alternatives --install /usr/bin/g++ g++ /usr/bin/g++-14 100
-```
-Then verify the version of `gcc` and `g++`:
-
-```bash
-gcc --version
-g++ --version
-```
-You should see `14.x.x` as the version.
-
-</TabItem><TabItem value="macos" label="macOS">
-
-It's recommended to use XCode or CLion to build CherryGrove on macOS. The tutorial below will use CLion.
-
-Install CLion and TODO: macOS
-
-</TabItem></Tabs>
-
-### CMake
-
-<Tabs groupId="os"><TabItem value="windows" label="Windows">
-
-Download and install CMake at https://cmake.org.
-
-</TabItem><TabItem value="linux" label="Linux">
-
-Install CMake from your distro's package manager, for example in Ubuntu:
-
-```bash
-sudo apt install cmake
-```
-
-</TabItem><TabItem value="macos" label="macOS">
-
-Download and install CMake at https://cmake.org, or install it from Homebrew:
-
-```bash
-brew install cmake
-```
-
-</TabItem></Tabs>
-
-Check if CMake is installed using:
-
-```bash
-cmake --version
-```
+## Prerequisites
 
 ### Git
 
@@ -193,21 +54,154 @@ Check if Git is installed using:
 git --version
 ```
 
+### Build Toolchain
+
+#### Compiler
+
+Clang/LLVM-build is the default toolchain. It's recommended on all platforms for better dead code eliminating and unified modern C++ support.
+
+#### Linker
+
+We use `lld-link` that comes with LLVM on Linux and macOS, and MSVC `LINK.EXE` on Windows because weird ABI incompatibility issues. If you found a way to make `lld-link` work on Windows, please let us know.
+
+#### Standard Library
+
+Prebuilt dependencies assume linkage against the platform's default C++ Standard Library: Microsoft STL for Windows, `libstdc++` for Linux, and `libc++` for macOS.
+
+Building CherryGrove using incorrect C++ Standard Library will result in an ABI conflict while linking. Please build the prebuilt dependencies manually if you really need another standard library.
+
+#### Installing Build Tools
+
+<Tabs groupId="os"><TabItem value="windows" label="Windows">
+
+1. Download and open the Microsoft Visual Studio installer from https://visualstudio.microsoft.com.
+2. Check `Desktop development with C++` workload.
+3. Switch to `Individual Components` tab, and check the following components for the Clang/LLVM toolchain:
+    - `C++ Clang Compiler for Windows (xx.x.x)`
+    - `MSBuild Support for LLVM (clang-cl) Toolset`
+
+:::tip
+If you need to cross compile (e.g. arm64 Windows on x64 Windows), you should also switch to `Individual Components` and check the MSVC component for the other architecture (e.g. `MSVC v1xx - VS 20xx C++ ARM64/ARM64EC build tools (latest)`).
+:::
+
+</TabItem><TabItem value="linux" label="Linux">
+
+Install `clang` and `lld` **from LLVM's official APT repository** for latest support for C++23.
+
+1. Add the repository's GPG key and source list:
+
+```bash
+lsb_release -cs
+sudo apt install ca-certificates gpg wget
+sudo mkdir -p /etc/apt/keyrings
+wget -O- https://apt.llvm.org/llvm-snapshot.gpg.key | gpg --dearmor | sudo tee /etc/apt/keyrings/llvm.gpg >/dev/null
+sudo nano /etc/apt/sources.list.d/llvm.sources
+```
+
+For Ubuntu 24.04, put this in `llvm.sources`:
+
+```bash
+Types: deb
+URIs: http://apt.llvm.org/noble/
+Suites: llvm-toolchain-noble
+Components: main
+Signed-By: /etc/apt/keyrings/llvm.gpg
+```
+
+2. Install the latest floating packages:
+
+```bash
+sudo apt update
+sudo apt install clang clangd lld libc++-dev libc++abi-dev
+clang++ --version
+```
+
+You should see `clang 22.x.x` or later in the output.
+
+3. For STL compatibility with prebuilt dependencies, you also need to install the latest `libstdc++`:
+
+```bash
+sudo apt install g++-14 libstdc++-14-dev
+```
+
+</TabItem><TabItem value="macos" label="macOS">
+
+MacOS uses `clang` and `clang++` as the default C and C++ compilers, so you don't need to do anything to set up the toolchain. Rare macOS W.
+
+</TabItem></Tabs>
+
+### CMake
+
+<Tabs groupId="os"><TabItem value="windows" label="Windows">
+
+Download and install CMake at https://cmake.org.
+
+</TabItem><TabItem value="linux" label="Linux">
+
+CherryGrove uses CMake 4.x, **which is not present in most of the registries**. Therefore, we recommend installing from Kitware's APT repository.
+
+1. Install the repository's GPG key:
+
+```bash
+sudo apt install ca-certificates gpg wget
+```
+
+```bash
+wget -O - https://apt.kitware.com/keys/kitware-archive-latest.asc 2>/dev/null | \
+gpg --dearmor | \
+sudo tee /usr/share/keyrings/kitware-archive-keyring.gpg >/dev/null
+```
+
+2. Add the repository to your APT sources:
+
+```bash
+sudo nano /etc/apt/sources.list.d/kitware.list
+```
+
+And put this line in the file. **Make sure to replace `<your-codename>` with your Ubuntu release codename**, for example `jammy` for Ubuntu 22.04 and `noble` for Ubuntu 24.04:
+
+```bash
+deb [signed-by=/usr/share/keyrings/kitware-archive-keyring.gpg] https://apt.kitware.com/ubuntu/ <your-codename> main
+```
+
+3. Update APT and install CMake:
+
+```bash
+sudo apt update
+sudo apt install kitware-archive-keyring
+sudo apt install cmake
+cmake --version
+```
+
+If you're not seeing CMake 4.x, use this to check if the correct repository is selected:
+
+```bash
+apt-cache policy cmake
+```
+
+</TabItem><TabItem value="macos" label="macOS">
+
+Download and install CMake at https://cmake.org, or install it from Homebrew:
+
+```bash
+brew install cmake
+```
+
+</TabItem></Tabs>
+
+Check if CMake is installed using:
+
+```bash
+cmake --version
+```
+
 ### Ninja
 
 CherryGrove uses Ninja as low level build system on all platforms by default because of its compatibility and versability. If you don't want to use Ninja, don't be worry. C++ toolchain is a wonderful place and many IDEs come with Ninja / can add Ninja as a workload such as Microsoft Visual Studio and CLion.
 
-Install ninja according to your OS:
-
 <Tabs groupId="os"><TabItem value="windows" label="Windows">
 
 Download Ninja at https://github.com/ninja-build/ninja/releases, and put it somewhere. Then set up system PATH variable to include Ninja's directory.
-
-Check if Ninja is installed using:
-
-```bash
-ninja --version
-```
 
 </TabItem><TabItem value="linux" label="Linux">
 
@@ -215,12 +209,6 @@ Download and install Ninja at https://github.com/ninja-build/ninja/releases, or 
 
 ```bash
 sudo apt install ninja-build
-```
-
-Check if Ninja is installed using:
-
-```bash
-ninja --version
 ```
 
 </TabItem><TabItem value="macos" label="macOS">
@@ -231,57 +219,13 @@ Download and install Ninja at https://github.com/ninja-build/ninja/releases, or 
 brew install ninja
 ```
 
+</TabItem></Tabs>
+
 Check if Ninja is installed using:
 
 ```bash
 ninja --version
 ```
-
-</TabItem></Tabs>
-
-### NASM
-
-CherryGrove uses `SDL_image` dependency to support AVIF texture input format, which involves compiling x86 assembly, so we need a x86 assembly compiler on x86 builds. NASM is recommended: https://nasm.us.
-
-<Tabs groupId="os"><TabItem value="windows" label="Windows">
-
-Get NASM at https://nasm.us/pub/nasm/releasebuilds/?C=M;O=D: click on the latest version (the top one without `rc`), go into `win64` and download the `nasm-<version>-installer-x64.exe` installer. Run the installer and follow the instructions.
-
-Check if NASM is installed using:
-
-```bash
-nasm -v
-```
-
-</TabItem><TabItem value="linux" label="Linux">
-
-Use your package manager to install NASM, for example in Ubuntu:
-
-```bash
-sudo apt install nasm
-```
-
-Check if NASM is installed using:
-
-```bash
-nasm -v
-```
-
-</TabItem><TabItem value="macos" label="macOS">
-
-Install NASM from Homebrew:
-
-```bash
-brew install nasm
-```
-
-Check if NASM is installed using:
-
-```bash
-nasm -v
-```
-
-</TabItem></Tabs>
 
 ### 7-zip
 
@@ -301,10 +245,10 @@ Install `7zip` from your distro's package manager, for example in Ubuntu:
 sudo apt install 7zip
 ```
 
-I f that package name is not available on your release, try using `7zip-standalone`. Check if 7z is installed using:
+If that package name is not available on your system, try using `7zip-standalone`. Check if 7z is installed using:
 
 ```bash
-7zz
+7z
 ```
 
 </TabItem><TabItem value="macos" label="macOS">
@@ -318,10 +262,42 @@ brew install sevenzip
 Check if 7z is installed using:
 
 ```bash
-7zz
+7z
 ```
 
 </TabItem></Tabs>
+
+### gperf
+
+CherryGrove uses `gperf` to generate perfect hash functions for some of the internal data structures. 
+
+<Tabs groupId="os"><TabItem value="windows" label="Windows">
+
+Download and install gperf at https://ftp.gnu.org/pub/gnu/gperf/. Then set up system PATH variable to include gperf's installation directory.
+
+</TabItem><TabItem value="linux" label="Linux">
+
+Install gperf from your distro's package manager, for example in Ubuntu:
+
+```bash
+sudo apt install gperf
+```
+
+</TabItem><TabItem value="macos" label="macOS">
+
+Install gperf from Homebrew:
+
+```bash
+brew install gperf
+```
+
+</TabItem></Tabs>
+
+Check if gperf is installed using:
+
+```bash
+gperf --version
+```
 
 ## Clone Repository
 
@@ -331,7 +307,7 @@ Remember to use the `--recursive` argument. Cloning might take several minutes t
 git clone --recursive https://github.com/cherryridge/cherrygrove.git
 ```
 
-## Grab Prebuilt Depedencies
+## Grab Prebuilt Dependencies
 
 Currently we have five prebuilt dependencies that **need to be downloaded separately** from GitHub Action's release. All of the archives from these releases are compressed using 7-Zip. You can download them all from running this script in `cherrygrove/libs` folder:
 
@@ -376,7 +352,7 @@ Links, in case you need to download these dependencies manually:
 3. `V8`: https://github.com/cherryridge/dep_v8/releases/latest
 4. `Wasmtime`: https://github.com/cherryridge/dep_wasmtime/releases/latest
 
-Upon decompressing, the files inside should look like this:
+If you're downloading them manually, upon decompressing, put all of the files and folders into `libs/<dependency_name>/<debug|release>`. You should see a `.gitignore` file inside each destination folder before putting files in, which stops Git from tracking these files. The inner structure of the destination folder should look like this:
 
 ```
 ├───📁 include/
@@ -385,76 +361,76 @@ Upon decompressing, the files inside should look like this:
 │   ├───📁 <dependency_name2>/ (optional)
 │   │   └───...
 │   └───📄 (...).<h|hpp|hh> (optional)
+├───📁 ... (optional)
 ├───📄 <library_name>.<lib|a>
 ├───📄 <library_name>.pdb (optional)
 ├───📄 <library_name2>.<lib|a> (optional)
 └───📄 VERSION.txt
 ```
 
-Put all of the files and folders into `libs/<dependency_name>/<debug|release>`. You should see a `.gitignore` file inside each destination folder before putting files in, which stops Git from tracking these files.
+## Platform-Specific Dependencies
 
-### Additional Dependencies for Linux
+### Linux and macOS
 
-For Linux, there are some additional dependencies you also need to install. In Ubuntu, run this command to install them:
+For Linux and macOS, you need to have `wine64` installed to compile DX11 shaders using `shaderc`. For Linux, you can install it from your distro's package manager, for example in Ubuntu:
 
 ```bash
-sudo apt install pkg-config libx11-dev libwayland-dev wayland-protocols libxkbcommon-dev libxkbcommon-x11-dev libxrandr-dev libxinerama-dev libgl1-mesa-dev x11proto-core-dev libxcursor-dev libxi-dev libgl-dev libasound2-dev libjack-jackd2-dev liblz4-dev libzstd-dev
+sudo apt install wine64
+```
+
+
+
+### Linux
+
+For Linux, there are some additional dependencies for SDL3 (which also covers SoLoud and bgfx's dependencies) you need to install. Check out https://wiki.libsdl.org/SDL3/README-linux#build-dependencies for more details. For Ubuntu, run:
+
+```bash
+sudo apt install build-essential pkg-config libasound2-dev libpulse-dev libaudio-dev libfribidi-dev libjack-dev libsndio-dev libx11-dev libxext-dev libxrandr-dev libxcursor-dev libxfixes-dev libxi-dev libxss-dev libxtst-dev libxkbcommon-dev libdrm-dev libgbm-dev libgl1-mesa-dev libgles2-mesa-dev libegl1-mesa-dev libdbus-1-dev libibus-1.0-dev libudev-dev libthai-dev libpipewire-0.3-dev libwayland-dev libdecor-0-dev liburing-dev
 ```
 
 ## Build
 
-You can deduce your build system by the software you're using, or by the build system files generated inside of `out` directory. If you're using an IDE, it may put subfolders of `<os>-<architecture>-<mode>` inside `out` directory instead of putting everything directly in `out`, and so does the commands and the products.
-
 <Tabs groupId="buildsystem"><TabItem value="vs" label="Visual Studio">
+
+It's recommended to use CMake support for Visual Studio instead of generating `.sln` files. Open the `cherrygrove` folder in Visual Studio, and it will probably prompt you to install the CMake workload, or you can also install it manually from the Visual Studio Installer. After that, Visual Studio will automatically generate build files for you.
+
+If you don't have Ninja installed, you might also need to set the CMake generator to "Visual Studio 17 2022" in `CMakePresets.json` or just delete the file. It's not that difficult to set up Ninja on Windows, please.
 
 Ensure the configuration is correctly generated, then switch build target to **CherryGrove.exe** and choose **Build > Build CherryGrove.exe**.
 
+</TabItem><TabItem value="vscode" label="Visual Studio Code">
+
+Install the "CMake Tools" extension. Open the `cherrygrove` folder in Visual Studio Code, and it will probably prompt you to install the CMake Tools extension, or you can also install it manually from the Extensions Marketplace.
+
+After that, press <kbd>Ctrl</kbd>+<kbd>Shift</kbd>+<kbd>P</kbd> and select "CMake: Configure". Choose your desired build configuration and generator (Ninja is recommended). Wait for CMake to generate build files. 
+
+Then, press <kbd>Ctrl</kbd>+<kbd>Shift</kbd>+<kbd>P</kbd> again and select "CMake: Build". Choose the CherryGrove target if prompted.
+
 </TabItem><TabItem value="clion" label="CLion">
 
-Enable `<os>-<architecture>-<mode>` profiles in Open Project Wizard, and press OK. Wait for CLion to generate build files.
+Open the `cherrygrove` folder in CLion. Enable `<os>-<architecture>-<mode>` profiles in Open Project Wizard, and press OK. Wait for CLion to generate build files. CLion comes with Ninja, so you even don't need to set up Ninja manually.
 
 Ensure the configuration is correct, then choose your desired profile and choose **Build 'CherryGrove'**.
 
 </TabItem><TabItem value="xcode" label="XCode">
 
-If you're using XCode IDE, open the generated `.xcworkspace` or `.xcodeproj` in Xcode. Adjust Scheme in the top toolbar, select the desired build mode configuration, If you're using it through the command line, run:
+If you're using XCode IDE, open the generated `.xcworkspace` or `.xcodeproj` in Xcode. Adjust Scheme in the top toolbar, select the desired build mode configuration, and select the CherryGrove target. Then, you can build the project by selecting **Product > Build** from the menu.
 
-```bash
-#TODO: macOS
-```
+</TabItem><TabItem value="commandline" label="Command Line">
 
-</TabItem><TabItem value="make" label="Make/GMake">
-
-Generate build system files from CMake using these commands:
+Browse `CMakePresets.json` and find the preset that matches your desired build configuration. Then, generate build system files using this command:
 
 ```bash
 cd cherrygrove
 mkdir out
 cd out
-cmake -G "Unix Makefiles" -DCMAKE_BUILD_TYPE=<Debug|Release> ..
+cmake -S .. --preset <preset>
 ```
 
-Run this command in `out` directory to build:
+Then build using this command:
 
 ```bash
-make
-```
-
-</TabItem><TabItem value="ninja" label="Ninja">
-
-Generate build system files from CMake using these commands:
-
-```bash
-cd cherrygrove
-mkdir out
-cd out
-cmake ..
-```
-
-Run this command in `out` directory to build:
-
-```bash
-ninja -C CherryGrove
+cmake --build <preset>
 ```
 
 </TabItem></Tabs>
