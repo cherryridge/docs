@@ -91,7 +91,6 @@ Install `clang` and `lld` **from LLVM's official APT repository** for latest sup
 1. Add the repository's GPG key and source list:
 
 ```bash
-lsb_release -cs
 sudo apt install ca-certificates gpg wget
 sudo mkdir -p /etc/apt/keyrings
 wget -O- https://apt.llvm.org/llvm-snapshot.gpg.key | gpg --dearmor | sudo tee /etc/apt/keyrings/llvm.gpg >/dev/null
