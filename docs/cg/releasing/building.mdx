@@ -370,7 +370,7 @@ If you're downloading them manually, upon decompressing, put all of the files an
 
 ## Platform-Specific Dependencies
 
-### Linux and macOS
+### Wine
 
 For Linux and macOS, you need to have `wine64` installed to compile DX11 shaders using `shaderc`. For Linux, you can install it from your distro's package manager, for example in Ubuntu:
 
@@ -378,9 +378,7 @@ For Linux and macOS, you need to have `wine64` installed to compile DX11 shaders
 sudo apt install wine64
 ```
 
-
-
-### Linux
+### Linux-Only Dependencies
 
 For Linux, there are some additional dependencies for SDL3 (which also covers SoLoud and bgfx's dependencies) you need to install. Check out https://wiki.libsdl.org/SDL3/README-linux#build-dependencies for more details. For Ubuntu, run:
 
@@ -447,10 +445,10 @@ For packing CherryGrove to ship to end user, visit the next document about [pack
 
 ## Troubleshooting
 
-### Downloading
+### Cloning
 
 1. It takes forever to clone CherryGrove
-    - Unfortunately there is no way to fix this because CherryGrove simply uses a lot of Git submodules and they also have many submodules inside of them. Under a typical network environment, cloning CherryGrove would take 1~5mins.
+    - Unfortunately there is no way to fix this because CherryGrove simply uses a lot of Git submodules and they also have many submodules inside of them. Under a typical network environment, cloning CherryGrove would take 1-5mins.
 
 2. Server timeout/unexpected EOF/other network issues while cloning
     - Simply retry using a better network. It's recommended to remove any downloaded files before retrying.
@@ -464,17 +462,13 @@ For packing CherryGrove to ship to end user, visit the next document about [pack
 ### Building
 
 1. CMake failed to generate project files
-    - If you're using Linux, and the error message contains `not found`, check if you had installed the [OS-specific dependencies](#additional-dependencies-for-linux).
-    - If the error message contains `CMAKE_ASM_NASM_COMPILER`, [download the NASM compiler](#nasm).
+    - If you're using Linux, and the error message contains `not found`, check if you had installed the [Linux-only dependencies](#linux-only-dependencies).
 
 ### Testing
 
 1. CherryGrove won't start
-    :::warning
-    It's a known bug that CherryGrove won't start under a directory path that has non-ASCII characters.
-    :::
     - Try to locate and inspect log files like `CherryGrove-<timestamp>.log` in `logs` folder near the executable. If you believe that a bug had occured, consider reporting to us.
     - You can also try to debug using your IDE.
 
 2. The GUI is in a bad shape / is flickering / is wrongly scaled / won't respond to resizing
-    - CherryGrove is still in a very early stage of development. For now (2025.11), that's pretty normal. At least you saw something happening :).
+    - CherryGrove is still in a very early stage of development. For now, that's pretty normal. At least you saw something happening :).

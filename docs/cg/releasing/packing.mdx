@@ -18,8 +18,8 @@ Download and install Inno Setup at https://jrsoftware.org/isdl.php.
 
 If you want to do a standard packing procedure, follow these steps:
 
-1. Build the **release** version of CherryGrove, and check if it works properly and locates **exactly** at `out/windows-x64-release` directory.
-2. Run `packing/windows/pack.bat`. You should see an installer file `CherryGrove_setup_win64.exe` generated inside the same directory.
+1. Build the **release** version of CherryGrove, and check if it works properly and locates **exactly** at `out/windows-x64-release` and `out/windows-arm64-release` directory.
+2. Run `packing/windows/pack.ps1`. You should see an installer file `CherryGrove_windows_x64.exe`, `CherryGrove_windows_arm64.exe`, `CherryGrove_windows_x64.zip` and `CherryGrove_windows_arm64.zip` generated inside the same directory.
 
 Adjust the code in the script to create your custom procedure.
 
