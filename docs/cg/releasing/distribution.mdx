@@ -16,7 +16,7 @@ CherryGrove supports multi-instancing. More on that at [multiple instance suppor
 
 Currently we are using the Inno Setup installer framework to create an instanced installer, in which users can choose the installation directory and disable registry entries and desktop shortcuts to enable multi-instancing.
 
-We will also provide a compressed archive later.
+We also provide a compressed archive.
 
 ### Package Managers & Stores
 
@@ -26,9 +26,9 @@ There is really no good package manager for Windows, so we only plan to distribu
 
 ### Independent Distribution
 
-To simplify the situation, we use AppImage for all Linux distros. We ignored the conventional approach of AppImage behavior and made it multi-instance by default. It will use the same directory as the AppImage file itself to store all the data.
+Unfortunately, there is no better way to distribute an instanced software on Linux other than providing a compressed archive. All the package managers just don't support it.
 
-We will also provide a compressed archive later.
+What about AppImage? It is only useful for setting the icon of the program, as far as we know. It disrupts the file structure of the program if we choose to embed `assets` in the AppImage. So it still needs to be put into a compressed archive.
 
 ### Package Managers & Stores
 
@@ -38,7 +38,7 @@ To simplify the situation, we only planned to distribute on Snap and Flatpak, wh
 
 ### Independent Distribution
 
-We use DMG files. If users want to multi-instance, they can use the archive.
+We are stuck with the same problem as Linux: there is really no better way to make it other than providing a compressed archive.
 
 We will also provide a compressed archive later.
 

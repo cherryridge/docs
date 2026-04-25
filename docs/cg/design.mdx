@@ -12,17 +12,7 @@ To get to this goal, we need to first understand Minecraft's design. The core of
 
 So there is mainly three parts of the design: The core, the interface for content packs, and the interface for human interaction. Surprisingly the easiest part is the core, just like every complex system like an operating system.
 
-## The Core
-
-The core is essentially a `while(true)` loop and we follows basically every game's design: Read input, update state, render output. The most important thing to talk about is optimization. More on that in the [simulation](design/simulation.mdx) document.
-
-## Content Packs
-
-What makes CherryGrove different from other games is that it's more like a tool/engine than a game. Everything is added though content packs, vanilla features are equal to any other features created by you.
-
-TODO:
-
-## The Scary Final Design Graph
+## The Scary Dependency Graph
 
 ```mermaid
 graph LR

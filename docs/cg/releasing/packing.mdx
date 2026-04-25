@@ -12,21 +12,25 @@ Remember to abide by the [Terms of Use](../../legal#terms-of-use) when you want 
 
 ## Microsoft Windows
 
-Download and install Inno Setup at https://jrsoftware.org/isdl.php.
+CherryGrove uses Inno Setup to create an instanced installer, in which users can choose the installation directory and disable registry entries and desktop shortcuts to enable multi-instancing.
 
-`.iss` script files used to build the installer can be found at `packing/windows`.
+A standard procedure for packing CherryGrove on Windows involves these steps:
 
-If you want to do a standard packing procedure, follow these steps:
-
-1. Build the **release** version of CherryGrove, and check if it works properly and locates **exactly** at `out/windows-x64-release` and `out/windows-arm64-release` directory.
-2. Run `packing/windows/pack.ps1`. You should see an installer file `CherryGrove_windows_x64.exe`, `CherryGrove_windows_arm64.exe`, `CherryGrove_windows_x64.zip` and `CherryGrove_windows_arm64.zip` generated inside the same directory.
+1. Download and install Inno Setup at https://jrsoftware.org/isdl.php.
+2. Build the **release** version of CherryGrove, and check if it works properly and locates **exactly** at `out/windows-x64-release` and `out/windows-arm64-release` directory.
+3. Run `packing/windows/pack.ps1`. You should see installer `CherryGrove_windows_x64.exe` and `CherryGrove_windows_arm64.exe`, archive `CherryGrove_windows_x64.zip` and `CherryGrove_windows_arm64.zip` generated inside the same directory.
 
 Adjust the code in the script to create your custom procedure.
 
 ## Linux
 
-CherryGrove currently uses AppImage to pack images for all Linux Distros.
+CherryGrove currently uses AppImage to pack the executable itself to register the icon of the program at startup, and then put the AppImage and `assets` directory into a compressed archive.
+
+A standard procedure for packing CherryGrove on Linux involves these steps:
+
+1. Build the **release** version of CherryGrove, and check if it works properly and locates **exactly** at `out/linux-x64-release` and `out/linux-arm64-release` directory.
+2. Run `packing/linux/pack.sh` to generate the AppImage and the compressed archive. Adjust the code in the script to create your custom procedure. You should see `CherryGrove_linux_x64.tar.gz` and `CherryGrove_linux_arm64.tar.gz` generated inside the same directory.
 
 ## macOS
 
-CherryGrove uses create-dmg to pack images on macOS.
+TODO:
