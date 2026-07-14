@@ -7,6 +7,10 @@ const config :Config = {
     tagline: "🌸🌳 Documentation for all about CherryGrove.",
     favicon: "img/logo.png",
 
+    future: {
+        v4: true
+    },
+
     url: "https://docs.cherrygrove.dev",
     baseUrl: "/",
 
