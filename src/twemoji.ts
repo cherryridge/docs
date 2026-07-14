@@ -1,4 +1,4 @@
-﻿import twemoji from "twemoji";
+import twemoji from "twemoji";
 
 function runTwemoji(){
     twemoji.parse(document.body, {
