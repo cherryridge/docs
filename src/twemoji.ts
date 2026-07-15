@@ -9,6 +9,6 @@ function runTwemoji(){
     });
 }
 
-export default {onRouteDidUpdate({ location, previousLocation }){
+export default {onRouteDidUpdate({ location, previousLocation } :{ location :{ pathname :string }; previousLocation? :{ pathname :string } }) {
     if (!previousLocation || location.pathname !== previousLocation.pathname) runTwemoji();
 }};

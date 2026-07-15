@@ -68,40 +68,6 @@ h5{
     font-size: 1.1rem;
 }
 
-.umi-landing-item{
-    display: flex;
-    flex-flow: row nowrap;
-    justify-content: center;
-    align-items: center;
-    cursor: pointer;
-    border-radius: 1rem;
-    transition: background-color 0.2s ease-in-out;
-    background-color: var(--ifm-color-primary-lightest);
-    color: var(--ifm-font-color-base);
-}
-
-*[data-theme="dark"] .umi-landing-item{
-    background-color: color-mix(in srgb, var(--ifm-color-primary-darkest) 70%, #000 30%);
-}
-
-.umi-landing-item:hover{
-    background-color: var(--ifm-color-primary-lighter);
-    color: var(--ifm-font-color-base);
-    text-decoration: none;
-}
-
-*[data-theme="dark"] .umi-landing-item:hover{
-    background-color: color-mix(in srgb, var(--ifm-color-primary-dark) 70%, #000 30%);
-}
-
-.umi-landing-item:active{
-    background-color: var(--ifm-color-primary-light);
-}
-
-*[data-theme="dark"] .umi-landing-item:active{
-    background-color: color-mix(in srgb, var(--ifm-color-primary-darker) 70%, #000 30%);
-}
-
 .cards--3 .col--6{
     flex: 0 0 33.3333%;
     max-width: 33.3333%;

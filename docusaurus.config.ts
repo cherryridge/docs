@@ -3,7 +3,7 @@ import type { Config } from "@docusaurus/types";
 import type * as Preset from "@docusaurus/preset-classic";
 
 const config :Config = {
-    title: "CherryGrove Documentation",
+    title: "CherryGrove Docs",
     tagline: "🌸🌳 Documentation for all about CherryGrove.",
     favicon: "img/logo.png",
 

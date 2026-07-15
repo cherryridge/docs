@@ -1,4 +1,4 @@
-import { type ReactNode } from "react";
+import { ReactNode } from "react";
 import styles from "./index.module.css";
 import useDocusaurusContext from "@docusaurus/useDocusaurusContext";
 import Layout from "@theme/Layout";
